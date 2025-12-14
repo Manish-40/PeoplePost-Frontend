@@ -1,0 +1,79 @@
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { baseurl } from "../utils/constants";
+
+export default function Found() {
+  const users = useSelector((store) => store.userfound);
+
+  // This is the correct placement for the "No users found" message
+  if (!users || users.length === 0) {
+    return (
+      <div className="flex flex-col gap-4 justify-center items-center h-screen text-center">
+        <p className="text-gray-600 text-lg">
+          No users found. Please try a different name.
+        </p>
+        <Link
+          to="/"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Go Back
+        </Link>
+      </div>
+    );
+  }
+
+  const fetchUserView = async (targetuserid) => {
+    try {
+      const res = await axios.get(baseurl + "/userview/" + targetuserid, { withCredentials: true });
+      console.log(res.data);
+
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  return (
+    <>
+      <div className="my-10 max-w-4xl mx-auto px-4 font-sans">
+        {users.map((user) => (
+          <Link to={"/user/" + user.firstname} onClick={() => fetchUserView(user._id)}>
+            <div
+              key={user._id}
+              className="flex items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200"
+            >
+              <div>
+                <img
+                  src={user.photourl}
+                  alt={user.firstname}
+                  className="w-20 h-20 rounded-full object-cover"
+                />
+              </div>
+              <div className="text-left mx-4 flex-grow">
+                <h2 className="font-extrabold text-xl text-gray-900">
+                  {user.firstname} {user.lastname}
+                </h2>
+                {user.age && user.gender && (
+                  <p className="text-gray-700 text-sm line-clamp-2">
+                    Age: {user.age}, Gender: {user.gender}
+                  </p>
+                )}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+      <div className="flex justify-center items-center py-5">
+        <Link
+          to="/"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Go Back
+        </Link>
+      </div>
+    </>
+  );
+}
+
