@@ -123,7 +123,7 @@ import Userpost from "./components/Userpost";
 import Chat from "./components/Chat";
 import Overview from "./components/overview";
 import Groupchat from "./components/Groupchat";
-import Group from "./components/group";
+import Group from "./components/Group";
 import Comment from "./components/comment";
 import Like from "./components/like";
 import Userclick from "./components/Userclick";
