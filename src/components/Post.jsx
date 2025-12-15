@@ -43,7 +43,7 @@ const Post = () => {
       );
 
       if (response.data.success) {
-        const cloudUrl = response.data.cloudinary_response.imageUrl;
+        const cloudUrl = response.data.cloudinary_response.url;
 
         setUploadedUrl(cloudUrl);
 
