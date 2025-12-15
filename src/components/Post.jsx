@@ -43,7 +43,7 @@ const Post = () => {
       );
 
       if (response.data.success) {
-        const cloudUrl = response.data.cloudinary_response.url;
+        const cloudUrl = response.data.cloudinary_response.imageUrl;
 
         setUploadedUrl(cloudUrl);
 
@@ -76,29 +76,56 @@ const Post = () => {
   };
 
   // -------- FINAL SUBMIT ----------
+  // const finalSubmitHandle = async () => {
+  //   try {
+  //     setLoading(true);
+  //     let finalImageUrl = url;
+
+  //     if (mode === "upload") {
+  //       finalImageUrl = await handleUpload();   // WAIT for upload
+  //       if (!finalImageUrl) finalImageUrl = ""
+  //     }
+
+  //     await savePost(finalImageUrl);
+  //     setShowToast(true);
+  //     setTimeout(() => setShowToast(false), 3000);
+
+  //   } catch (error) {
+  //     console.error("ERROR:", error);
+  //     setErrorShowToast(true);
+  //     setTimeout(() => setErrorShowToast(false), 3000);
+  //   }
+  //   finally {
+  //     setLoading(false);
+  //   }
+  // };
   const finalSubmitHandle = async () => {
-    try {
-      setLoading(true);
-      let finalImageUrl = url;
+  try {
+    setLoading(true);
+    let finalImageUrl = url;
 
-      if (mode === "upload") {
-        finalImageUrl = await handleUpload();   // WAIT for upload
-        if (!finalImageUrl) finalImageUrl = ""
+    if (mode === "upload") {
+      finalImageUrl = await handleUpload();
+
+      if (!finalImageUrl) {
+        throw new Error("Image upload failed");
       }
-
-      await savePost(finalImageUrl);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-
-    } catch (error) {
-      console.error("ERROR:", error);
-      setErrorShowToast(true);
-      setTimeout(() => setErrorShowToast(false), 3000);
     }
-    finally {
-      setLoading(false);
-    }
-  };
+
+    await savePost(finalImageUrl);
+
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+
+  } catch (error) {
+    console.error("ERROR:", error);
+    setErrorShowToast(true);
+    setTimeout(() => setErrorShowToast(false), 3000);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
