@@ -110,6 +110,8 @@ const Post = () => {
       }
     }
 
+    console.log("finalimageurl",finalImageUrl);
+    
     await savePost(finalImageUrl);
 
     setShowToast(true);
