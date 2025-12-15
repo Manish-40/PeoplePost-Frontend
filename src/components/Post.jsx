@@ -42,12 +42,10 @@ const Post = () => {
         }
       );
 
-      if (response.data.success) {
-        const cloudUrl = response.data.cloudinary_response.url;
+      if (response.data.success && response.data.url) {
+        setUploadedUrl(response.data.url);
 
-        setUploadedUrl(cloudUrl);
-
-        return cloudUrl;  // ✅ return Cloudinary URL
+        return response.data.url;  // ✅ return Cloudinary URL
       }
 
       return null;
