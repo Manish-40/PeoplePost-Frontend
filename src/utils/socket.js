@@ -12,7 +12,7 @@ let socket;
 export const createSocketConnection = () => {
   if (!socket) {
     socket = io(baseurl, {
-      transports: ["polling"], // fallback for serverless
+    //   transports: ["polling"], // fallback for serverless
       withCredentials: true,                // if using cookies/session
     });
   }
