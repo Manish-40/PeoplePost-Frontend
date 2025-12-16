@@ -57,21 +57,45 @@ const Post = () => {
   };
 
   // -------- SAVE POST ----------
+  // const savePost = async (imageUrl) => {
+  //   try {
+  //     const res = await axios.post(
+  //       baseurl + "/post",
+  //       { url: imageUrl, description },
+  //       { withCredentials: true }
+  //     );
+
+  //     dispatch(addPost(res.data));
+
+  //   } catch (error) {
+  //     console.log("Something went wrong: " + error);
+  //     throw error;
+  //   }
+  // };
   const savePost = async (imageUrl) => {
-    try {
-      const res = await axios.post(
-        baseurl + "/post",
-        { url: imageUrl, description },
-        { withCredentials: true }
-      );
+  try {
+    const payload = {
+      description
+    };
 
-      dispatch(addPost(res.data));
-
-    } catch (error) {
-      console.log("Something went wrong: " + error);
-      throw error;
+    // only include url if it exists
+    if (imageUrl && imageUrl.trim() !== "") {
+      payload.url = imageUrl;
     }
-  };
+
+    const res = await axios.post(
+      baseurl + "/post",
+      payload,
+      { withCredentials: true }
+    );
+
+    dispatch(addPost(res.data));
+  } catch (error) {
+    console.log("Something went wrong:", error);
+    throw error;
+  }
+};
+
 
   // -------- FINAL SUBMIT ----------
   // const finalSubmitHandle = async () => {
@@ -106,8 +130,8 @@ const Post = () => {
       finalImageUrl = await handleUpload();
 
       if (!finalImageUrl) {
-        // throw new Error("Image upload failed");
-        finalImageUrl="";
+        throw new Error("Image upload failed");
+        // finalImageUrl="";
       }
     }
 
