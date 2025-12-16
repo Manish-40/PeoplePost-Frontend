@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { baseurl } from "../utils/constants";
-import { io } from "socket.io-client";
+import { createSocketConnection } from "../utils/socket";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -42,20 +42,18 @@ const Chat = () => {
 
   // --------------- Socket connection ---------------
   useEffect(() => {
-    if (!userId) return;
+  socketRef.current = createSocketConnection();
 
-    socketRef.current = io(baseurl);
+  socketRef.current.emit("joinChat", { userId, targetUserId });
 
-    socketRef.current.emit("joinChat", { userId, targetUserId });
+  socketRef.current.on("messageReceived", (msg) => {
+    setMessages(prev => [...prev, msg]);
+  });
 
-    socketRef.current.on("messageReceived", (msg) => {
-      setMessages((prev) => [...prev, msg]);
-    });
-
-    return () => {
-      socketRef.current.disconnect();
-    };
-  }, [userId, targetUserId]);
+  return () => {
+    socketRef.current.disconnect();
+  };
+}, [userId, targetUserId]);
 
   // --------------- Send message ---------------
   const sendMessage = () => {
