@@ -199,53 +199,49 @@ const Chat = () => {
     autoScrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-screen sm:h-[80vh] flex flex-col bg-gray-200 rounded-xl shadow-lg border">
-
-        {/* HEADER */}
-        <div className="p-5 border-b">
-          <h1 className="text-2xl font-semibold">Chat</h1>
+    return (
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black p-4 sm:p-0'>
+      {/* Main chat container. This is responsive based on screen size. */}
+      {/* w-full on mobile, then w-3/4, w-2/3, and w-1/2 for larger screens */}
+      <div className='w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-screen sm:h-[80vh] flex flex-col border border-gray-400 rounded-xl shadow-lg bg-gray-200'>
+        {/* Chat header */}
+        <div className='p-5 border-b border-gray-400 flex justify-between items-center'>
+          <h1 className='text-2xl font-semibold'>Chat</h1>
         </div>
 
-        {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        {/* Chat messages display area with a flexible height and scroll */}
+        <div className='flex-1 overflow-y-auto p-5 space-y-4'>
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${
-                msg.senderId === userId ? "justify-end" : "justify-start"
-              }`}
+              className={`flex items-end gap-2 ${user.firstname === msg.firstname ? 'justify-end' : 'justify-start'}`}
             >
-              <div
-                className={`max-w-[75%] p-3 rounded-lg ${
-                  msg.senderId === userId
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-400 text-black"
-                }`}
-              >
-                <div className="text-sm font-semibold">
+              <div className={`p-3 rounded-lg max-w-[80%] break-words ${user.firstname === msg.firstname ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-400 text-black rounded-bl-none'}`}>
+                <div className='font-semibold text-sm'>
                   {msg.firstname}
                 </div>
                 <div>{msg.text}</div>
               </div>
             </div>
           ))}
-          <div ref={autoScrollRef} />
+          {/* Invisible element to scroll to */}
+          {/* Add a ref here to auto-scroll */}
+          <div className="h-0" ref={autoScrollRef}></div>
         </div>
 
-        {/* INPUT */}
-        <div className="p-5 border-t flex gap-2">
+        {/* Message input and send button container */}
+        {/* The 'flex' container automatically manages space between the input and button. */}
+        <div className='p-5 border-t border-gray-400 flex flex-wrap items-center gap-2'>
           <input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 rounded-full border focus:outline-none"
+            className='flex-1 border border-gray-400 bg-gray-100 text-black rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors placeholder-gray-500'
+            placeholder='Type a message...'
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           />
           <button
             onClick={sendMessage}
-            className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700"
+            className='bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition-colors'
           >
             Send
           </button>
