@@ -106,7 +106,8 @@ const Post = () => {
       finalImageUrl = await handleUpload();
 
       if (!finalImageUrl) {
-        throw new Error("Image upload failed");
+        // throw new Error("Image upload failed");
+        finalImageUrl="";
       }
     }
 
