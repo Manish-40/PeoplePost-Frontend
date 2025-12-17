@@ -1,151 +1,99 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import axios from "axios";
-import { baseurl } from "../utils/constants";
-import { createSocketConnection } from "../utils/socket";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { createSocketConnection } from '../utils/socket';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { baseurl } from '../utils/constants';
 
 const Chat = () => {
   const { targetUserId } = useParams();
-  const user = useSelector((store) => store.user);
-  const userId = user?._id;
-
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const user = useSelector(store => store.user);
+  const userId = user?._id;
 
-  const socketRef = useRef(null);
-  const autoScrollRef = useRef(null);
+  const fetchChatMessages = async () => {
+    try {
+      const chat = await axios.get(baseurl + "/chat/" + targetUserId, { withCredentials: true });
+      const chatMessages = chat?.data?.messages.map(msg => {
+        const { senderId, text } = msg;
+        return { firstname: senderId?.firstname, lastname: senderId?.lastname, text };
+      });
+      setMessages(chatMessages);
+    } catch (error) {
+      console.error("Failed to fetch chat messages:", error);
+    }
+  };
 
-  // --------------- 1. Fetch old messages ---------------
   useEffect(() => {
-    const fetchChatMessages = async () => {
-      // Don't fetch if we don't have the ID yet
-      if (!targetUserId) return;
-      
-      try {
-        const res = await axios.get(`${baseurl}/chat/${targetUserId}`, {
-          withCredentials: true,
-        });
-
-        const chatMessages = res.data.messages.map((msg) => ({
-          senderId: msg.senderId?._id,
-          firstname: msg.senderId?.firstname,
-          lastname: msg.senderId?.lastname,
-          text: msg.text,
-        }));
-
-        setMessages(chatMessages);
-      } catch (error) {
-        console.error("Failed to fetch chat messages:", error);
-      }
-    };
-
     fetchChatMessages();
   }, [targetUserId]);
 
-  // --------------- 2. Socket connection Logic ---------------
   useEffect(() => {
-    // CRITICAL: Wait for userId (Redux state) to be available after refresh
-    if (!userId || !targetUserId) return;
+    if (!userId) {
+      return;
+    }
+    const socket = createSocketConnection();
+    socket.emit("joinChat", { firstname: user.firstname, userId, targetUserId });
 
-    // Initialize connection
-    socketRef.current = createSocketConnection();
-
-    // Join the specific chat room
-    socketRef.current.emit("joinChat", { userId, targetUserId });
-
-    // Listen for incoming messages
-    socketRef.current.on("messageReceived", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+    socket.on("messageReceived", ({ firstname, lastname, text }) => {
+      setMessages(messages => [...messages, { firstname, lastname, text }]);
     });
 
-    // Cleanup on unmount or when IDs change
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+      socket.disconnect();
     };
-  }, [userId, targetUserId]); // Re-runs when Redux finishes loading userId
+  }, [userId, targetUserId, user?.firstname]);
 
-  // --------------- 3. Send message ---------------
   const sendMessage = () => {
-    if (!newMessage.trim() || !socketRef.current) return;
-
-    socketRef.current.emit("sendMessage", {
-      userId,
-      targetUserId,
-      text: newMessage,
-      firstname:user.firstname,
-      lastname:user.lastname
-    });
-
+    if (newMessage.trim() === "") return;
+    const socket = createSocketConnection();
+    socket.emit("sendMessage", { firstname: user.firstname, lastname: user.lastname, userId, targetUserId, text: newMessage });
     setNewMessage("");
   };
 
-  // --------------- 4. Auto scroll ---------------
-  useEffect(() => {
-    autoScrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Loading state if user data isn't in Redux yet
-  if (!userId) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-lg font-medium">Loading chat session...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-      <div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-screen sm:h-[80vh] flex flex-col bg-gray-200 rounded-xl shadow-lg border">
-        {/* Header */}
-        <div className="p-5 border-b bg-white rounded-t-xl">
-          <h1 className="text-2xl font-semibold text-gray-800">Chat</h1>
+    <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black p-4 sm:p-0'>
+      {/* Main chat container. This is responsive based on screen size. */}
+      {/* w-full on mobile, then w-3/4, w-2/3, and w-1/2 for larger screens */}
+      <div className='w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-screen sm:h-[80vh] flex flex-col border border-gray-400 rounded-xl shadow-lg bg-gray-200'>
+        {/* Chat header */}
+        <div className='p-5 border-b border-gray-400 flex justify-between items-center'>
+          <h1 className='text-2xl font-semibold'>Chat</h1>
         </div>
 
-        {/* Messages area */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
+        {/* Chat messages display area with a flexible height and scroll */}
+        <div className='flex-1 overflow-y-auto p-5 space-y-4'>
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${
-                msg.senderId === userId ? "justify-end" : "justify-start"
-              }`}
+              className={`flex items-end gap-2 ${user.firstname === msg.firstname ? 'justify-end' : 'justify-start'}`}
             >
-              <div
-                className={`max-w-[75%] p-3 rounded-lg shadow-sm ${
-                  msg.senderId === userId
-                    ? "bg-blue-600 text-white rounded-br-none"
-                    : "bg-white text-black border rounded-bl-none"
-                }`}
-              >
-                <div className={`text-xs mb-1 opacity-75 font-bold ${
-                   msg.senderId === userId ? "text-blue-100" : "text-gray-500"
-                }`}>
-                  {msg.firstname} {msg.lastname}
+              <div className={`p-3 rounded-lg max-w-[80%] break-words ${user.firstname === msg.firstname ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-400 text-black rounded-bl-none'}`}>
+                <div className='font-semibold text-sm'>
+                  {msg.firstname}
                 </div>
-                <div className="break-words">{msg.text}</div>
+                <div>{msg.text}</div>
               </div>
             </div>
           ))}
-          <div ref={autoScrollRef} />
+          {/* Invisible element to scroll to */}
         </div>
 
-        {/* Input area */}
-        <div className="p-4 border-t bg-white rounded-b-xl flex items-center gap-2">
+        {/* Message input and send button container */}
+        {/* The 'flex' container automatically manages space between the input and button. */}
+        <div className='p-5 border-t border-gray-400 flex flex-wrap items-center gap-2'>
           <input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Type a message..."
-            className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            className='flex-1 border border-gray-400 bg-gray-100 text-black rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors placeholder-gray-500'
+            placeholder='Type a message...'
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           />
           <button
             onClick={sendMessage}
-            disabled={!newMessage.trim()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+            className='bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition-colors'
           >
             Send
           </button>
