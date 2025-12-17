@@ -83,21 +83,23 @@ const Chat = () => {
 
         {/* Message input and send button container */}
         {/* The 'flex' container automatically manages space between the input and button. */}
-        <div className='p-5 border-t border-gray-400 flex flex-wrap items-center gap-2'>
+        <div className="p-4 border-t border-gray-400 flex flex-col sm:flex-row items-center gap-2">
           <input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className='flex-1 border border-gray-400 bg-gray-100 text-black rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors placeholder-gray-500'
-            placeholder='Type a message...'
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            className="w-full sm:flex-1 border border-gray-400 bg-gray-100 text-black rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+            placeholder="Type a message..."
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
+
           <button
             onClick={sendMessage}
-            className='bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition-colors'
+            className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-full font-semibold hover:bg-blue-700 transition-colors"
           >
             Send
           </button>
         </div>
+
       </div>
     </div>
   );
