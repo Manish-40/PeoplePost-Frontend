@@ -189,7 +189,7 @@ const Editprofile = ({ user }) => {
 
   const [isPresent, setIsPresent] = useState(false);
   // const [show,setShow] =useState(false);
-
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -213,6 +213,7 @@ const Editprofile = ({ user }) => {
   const saveprofile = async () => {
     seterror("");
     try {
+      setLoader(true);
       const formData = new FormData();
       formData.append("firstname", firstname);
       formData.append("lastname", lastname);
@@ -228,10 +229,14 @@ const Editprofile = ({ user }) => {
       });
 
       dispatch(addUser(res?.data?.data));
+      
       setshowtoast(true);
       setTimeout(() => setshowtoast(false), 3000);
     } catch (err) {
       seterror(err.response?.data || "Something went wrong");
+    }
+    finally{
+      setLoader(false);
     }
   };
 
@@ -664,6 +669,24 @@ const Editprofile = ({ user }) => {
       {showtoast && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 sm:px-6 py-3 rounded-lg shadow-xl w-[90%] max-w-md z-50 text-center">
           Profile saved successfully.
+        </div>
+      )}
+
+      {loader && (
+        // 1. Fixed, full-screen container (INVISIBLE, but covers the screen for centering)
+        // 'bg-transparent' ensures no full-screen overlay/dimming effect.
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent pointer-events-none">
+
+          {/* 2. The actual loading message box (The element you want centered) */}
+          {/* 'pointer-events-auto' allows this small box to receive pointer events (though usually not necessary for a loader) */}
+          <div className="bg-gray-800 bg-opacity-90 text-white px-8 py-4 rounded-xl 
+                      shadow-2xl flex items-center gap-4 text-lg font-semibold pointer-events-auto">
+
+            {/* The Spinner */}
+            <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+            Saving your post...
+          </div>
         </div>
       )}
 
