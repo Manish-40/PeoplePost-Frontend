@@ -5,6 +5,7 @@ import { createSocketConnection } from '../utils/socket';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { baseurl } from '../utils/constants';
+import { useRef } from 'react';
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -12,6 +13,7 @@ const Chat = () => {
   const [newMessage, setNewMessage] = useState("");
   const user = useSelector(store => store.user);
   const userId = user?._id;
+  const autoScroll = useRef(null);
 
   const fetchChatMessages = async () => {
     try {
@@ -28,12 +30,18 @@ const Chat = () => {
 
   useEffect(() => {
     fetchChatMessages();
+
   }, [targetUserId]);
+  
+  useEffect(() => {
+    autoScroll.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages])
 
   useEffect(() => {
     if (!userId) {
       return;
     }
+
     const socket = createSocketConnection();
     socket.emit("joinChat", { firstname: user.firstname, userId, targetUserId });
 
@@ -70,6 +78,7 @@ const Chat = () => {
               key={index}
               className={`flex items-end gap-2 ${user.firstname === msg.firstname ? 'justify-end' : 'justify-start'}`}
             >
+
               <div className={`p-3 rounded-lg max-w-[80%] break-words ${user.firstname === msg.firstname ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-400 text-black rounded-bl-none'}`}>
                 <div className='font-semibold text-sm'>
                   {msg.firstname}
@@ -79,6 +88,7 @@ const Chat = () => {
             </div>
           ))}
           {/* Invisible element to scroll to */}
+          <div ref={autoScroll} />
         </div>
 
         {/* Message input and send button container */}
