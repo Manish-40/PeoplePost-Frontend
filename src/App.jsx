@@ -130,9 +130,13 @@ import Userclick from "./components/Userclick";
 import Userpostclick from "./components/Userpostclick";
 import Editeducation from "./components/Editeducation";
 import Editexperience from "./components/Editexperience";
+import AuthLoader from "./components/AuthLoader";
 function AppRoutes() {
-  const user = useSelector((store) => store.user); 
-
+  //const user = useSelector((store) => store.user); 
+  const { data: user, loading } = useSelector((store) => store.user);
+  if (loading) {
+    return <div>Loading...</div>; // or spinner
+  }
   return (
     <Routes>
       <Route
@@ -173,7 +177,9 @@ function App() {
   return (
     <Provider store={appstore}>
       <BrowserRouter basename="/">
-        <AppRoutes />
+        <AuthLoader>
+          <AppRoutes />
+        </AuthLoader>
       </BrowserRouter>
     </Provider>
   );

@@ -11,7 +11,7 @@ const Chat = () => {
   const { targetUserId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const user = useSelector(store => store.user);
+  const user = useSelector(store => store.user.data);
   const userId = user?._id;
   const autoScroll = useRef(null);
 

@@ -233,9 +233,12 @@ const Editprofile = ({ user }) => {
       setshowtoast(true);
       setTimeout(() => setshowtoast(false), 3000);
     } catch (err) {
-      seterror(err.response?.data || "Something went wrong");
+      console.log("err: ", err);
+      console.log("err.res: ", err.response)
+      seterror(err.response?.data?.error || "Something went wrong");
+      console.log(error);
     }
-    finally{
+    finally {
       setLoader(false);
     }
   };

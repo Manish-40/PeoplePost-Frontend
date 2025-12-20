@@ -12,7 +12,7 @@ const body = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const userdata = useSelector((store) => store.user);
+  const userdata = useSelector((store) => store.user.data);
   const fetchuser = async () => {
     if (userdata) return;
     try {

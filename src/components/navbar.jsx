@@ -7,7 +7,7 @@ import { removeUser } from '../utils/userslice';
 import { addUserfound } from '../utils/userfoundslice';
 
 const Navbar = () => {
-  const user = useSelector((store) => store.user);
+  const user = useSelector((store) => store.user.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [firstname, setfirstname] = useState("");
