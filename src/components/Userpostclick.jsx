@@ -23,7 +23,9 @@ const UserPostclick = () => {
   }, [targetpostid])
   const { url, description, userPostViewCount, _id, createdAt, firstname, lastname ,viewedBy, author } = post;
   const photourl = post?.author?.photourl;
-  const style=firstname.charAt(0).toUpperCase()+lastname.charAt(0).toUpperCase();
+  console.log(post?.author._id);
+  
+  const style=firstname?.charAt(0).toUpperCase()+lastname?.charAt(0).toUpperCase();
   return (
     // <div className='p-3'>
     //     <div className='items-center justify-between'>
@@ -47,7 +49,7 @@ const UserPostclick = () => {
                      border border-gray-200 overflow-hidden"
         >
           {/* User info */}
-          <Link to={"/user/" + author}>
+          <Link to={"/user/" + author._id}>
             <div className="flex items-center p-4">
               <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
                 {photourl !== "http://peoplepost-default.png" ? (
