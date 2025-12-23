@@ -21,8 +21,9 @@ const UserPostclick = () => {
   useEffect(() => {
     fetchpostuser()
   }, [targetpostid])
-  const { url, description, userPostViewCount, _id, createdAt, name, viewedBy } = post;
+  const { url, description, userPostViewCount, _id, createdAt, firstname, lastname ,viewedBy, author } = post;
   const photourl = post?.author?.photourl;
+  const style=firstname.charAt(0).toUpperCase()+lastname.charAt(0).toUpperCase();
   return (
     // <div className='p-3'>
     //     <div className='items-center justify-between'>
@@ -46,26 +47,31 @@ const UserPostclick = () => {
                      border border-gray-200 overflow-hidden"
         >
           {/* User info */}
-          <Link to={"/user/" + name}>
-            <div className="flex items-center p-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                <img
-                  src={
-                    photourl || "user"
-                    // "https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo="
-                  }
-                  alt="User avatar"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="font-semibold text-gray-900 text-sm">
-                {name || "User"}
+          <Link to={"/user/" + author}>
+            <div className="flex items-center p-4">
+              <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
+                {photourl !== "http://peoplepost-default.png" ? (
+                  <img
+                    src={photourl}
+                    alt="User avatar"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">
+                    {style}
+                  </div>
+                )}
               </div>
 
-              <div className="font-semibold text-gray-900 text-sm ml-10">
+              <div className="font-semibold text-gray-900">
+                {firstname || "User"} {lastname || ""}
+              </div>
+
+              <div className="ml-auto text-gray-500 text-sm font-semibold">
                 {createdAt}
               </div>
             </div>
+
           </Link>
 
 
@@ -85,7 +91,7 @@ const UserPostclick = () => {
           {/* Description */}
           <div className="p-3">
             <p className="text-gray-700 text-sm leading-tight line-clamp-2">
-              <span className="font-semibold">{name || "User"}</span>{" "}
+              <span className="font-semibold">{firstname || "User"} {lastname || ""}</span>{" "}
               {description}
             </p>
             {/* <p>Post Viewed: {userPostViewCount}</p> */}

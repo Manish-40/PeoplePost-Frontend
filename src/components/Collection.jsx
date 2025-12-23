@@ -185,7 +185,7 @@ const Collection = () => {
 
                 <div className="p-3">
                   <p className="text-gray-700 text-sm">
-                    <span className="font-semibold">{name}</span> {description}
+                    <span className="font-semibold">{firstname} {lastname}</span> {description}
                   </p>
                 </div>
               </Link>
