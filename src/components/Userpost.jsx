@@ -125,9 +125,10 @@ const Userpost = () => {
 
         {userpostsave.map((post) => {
 
-          const { url, description, firstname,lastname, photourl, _id, createdAt, userPostViewCount } = post;
+          const { url, description, firstname, lastname, photourl, _id, createdAt, userPostViewCount } = post;
           const liked = (likes?.[_id] ?? 0) > 0;
           const { author } = post;
+          const style = firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase();
           return (
             <div
               key={_id}
@@ -138,15 +139,28 @@ const Userpost = () => {
               <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
                 <div className="flex items-center p-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
-                    <img
-                      src={photourl || "https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo="}
-                      alt="User avatar"
-                      className="w-full h-full object-cover"
-                    />
+                    {photourl !== "http://peoplepost-default.png" ? (
+                      <img
+                        src={photourl}
+                        alt="User avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">
+                        {style}
+                      </div>
+                    )}
                   </div>
-                  <div className="font-semibold text-gray-900">{firstname || "User"} {lastname || "User"}</div>
-                  <div className="ml-auto text-gray-500 text-sm font-semibold">{createdAt}</div>
+
+                  <div className="font-semibold text-gray-900">
+                    {firstname || "User"} {lastname || ""}
+                  </div>
+
+                  <div className="ml-auto text-gray-500 text-sm font-semibold">
+                    {createdAt}
+                  </div>
                 </div>
+
               </Link>
 
               <Link to={"/post/user/" + _id} onClick={() => fetchUserPostView(_id)}>
