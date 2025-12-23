@@ -32,12 +32,13 @@ const Updateeducation = ({ education }) => {
 
     const [fromRaw, setFromRaw] = useState(education?.from || "");
     const [toRaw, setToRaw] = useState(education?.to || "");
-
+//nov-2025 -> 2025-10
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showToast, setShowToast] = useState(false);
 
 
+    console.log("update fromraw: ", fromRaw)
     const handleUpdateEducation = async () => {
         try {
             const skillsArray = skill
@@ -46,7 +47,6 @@ const Updateeducation = ({ education }) => {
                 .filter((s) => s);
 
             const data1 = { school, degree, field_of_study, grade, skills: skillsArray, from: fromRaw, to: toRaw };
-
             const res = await axios.patch(
                 baseurl + "/education/" + education._id,
                 data1,
@@ -83,7 +83,7 @@ const Updateeducation = ({ education }) => {
         const date = new Date(value);
         return date
             .toLocaleString("en-US", { month: "short", year: "numeric" })
-            .replace(" ", " - ");
+            .replace(" ", "-");
     };
     return (
         <div className="min-h-screen flex flex-col items-center py-10 px-4 bg-gradient-to-br from-indigo-50 to-indigo-100">
@@ -129,7 +129,7 @@ const Updateeducation = ({ education }) => {
                                 <div className="w-1/2 relative">
                                     <legend className="absolute -top-2 left-2 px-1 text-xs text-gray-600 bg-white">To:</legend>
                                     <input type="text" value={to} className="w-1/2 p-3 border rounded" readOnly />
-                                    <input type="month" value={toRaw} placeholder="MM-YYYY" className="w-1/2 p-3 border rounded" onChange={(e) => { setToRaw(e.target.value); setTo(formatMonthYear(e.target.value)); }} />
+                                    <input type="month" value={toRaw} placeholder="MM - YYYY" className="w-1/2 p-3 border rounded" onChange={(e) => { setToRaw(e.target.value); setTo(formatMonthYear(e.target.value)); }} />
                                 </div>
                             </div>
 

@@ -5,7 +5,6 @@ import { baseurl } from "../utils/constants";
 
 export default function Found() {
   const users = useSelector((store) => store.userfound);
-
   // This is the correct placement for the "No users found" message
   if (!users || users.length === 0) {
     return (
@@ -35,22 +34,31 @@ export default function Found() {
   }
 
 
+
   return (
     <>
       <div className="my-10 max-w-4xl mx-auto px-4 font-sans">
         {users.map((user) => (
-          <Link to={"/user/" + user.firstname} onClick={() => fetchUserView(user._id)}>
+          <Link to={"/user/" + user._id} onClick={() => fetchUserView(user._id)}>
             <div
               key={user._id}
               className="flex items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200"
             >
-              <div>
-                <img
-                  src={user.photourl}
-                  alt={user.firstname}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
+              <div className="flex items-center justify-center">
+                {user?.photourl && user.photourl !== "http://peoplepost-default.png" ? (
+                  <img
+                    src={user.photourl}
+                    alt={user?.firstname || "User"}
+                    className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
+                    {(user?.firstname?.charAt(0).toUpperCase() || "") +
+                      (user?.lastname?.charAt(0).toUpperCase() || "")}
+                  </div>
+                )}
               </div>
+
               <div className="text-left mx-4 flex-grow">
                 <h2 className="font-extrabold text-xl text-gray-900">
                   {user.firstname} {user.lastname}

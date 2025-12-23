@@ -155,7 +155,6 @@ const Editprofile = ({ user }) => {
   const [showtoast, setshowtoast] = useState(false);
   const [error, seterror] = useState("");
   const { userViewCount } = user;
-  const [view, setView] = useState("");
 
   const [open, setOpen] = useState(false);
   const [school, setSchool] = useState("");
@@ -317,8 +316,7 @@ const Editprofile = ({ user }) => {
 
   const fetchViewedBy = async () => {
     try {
-      const res = await axios.get(baseurl + "/user/" + firstname, { withCredentials: true });
-      setView(res.data);
+      await axios.get(baseurl + "/user/" + user._id, { withCredentials: true });
     }
     catch (error) {
       console.log(error);
@@ -337,7 +335,7 @@ const Editprofile = ({ user }) => {
 
           {/* Profile Picture */}
           <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gray-200">
-            {previewUrl ? (
+            {previewUrl !== "http://peoplepost-default.png" ? (
               <img
                 src={previewUrl}
                 alt={`${firstname} ${lastname}`}
@@ -345,7 +343,7 @@ const Editprofile = ({ user }) => {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
-                👤
+                {firstname.charAt(0).toUpperCase()+lastname.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
@@ -382,8 +380,8 @@ const Editprofile = ({ user }) => {
             {/* Viewed By List */}
             <h3 className="text-lg font-semibold text-gray-800">Profile Viewed By:</h3>
 
-            {view?.viewedBy?.length > 0 ? (
-              view.viewedBy.map((e) => (
+            {user?.viewedBy?.length > 0 ? (
+              user.viewedBy.map((e) => (
                 <div
                   key={e._id}
                   className="p-3 mb-2 border rounded hover:shadow transition"
@@ -688,7 +686,7 @@ const Editprofile = ({ user }) => {
             {/* The Spinner */}
             <div className="w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
 
-            Saving your post...
+            Saving your profile...
           </div>
         </div>
       )}

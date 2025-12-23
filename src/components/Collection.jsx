@@ -22,6 +22,7 @@ const Collection = () => {
   const fetchpostfeed = async () => {
     try {
       const res = await axios.get(`${baseurl}/post/feed`, { withCredentials: true });
+      console.log(res.data);
       dispatch(addPostFeed(res.data));
       fetchLikesForAllPosts(res.data);
     } catch (error) {
@@ -117,10 +118,11 @@ const Collection = () => {
     <div className="my-10 max-w-7xl mx-auto px-4">
       <div className="flex flex-col items-center">
         {collections.map((collection) => {
-          const { url, description, name, createdAt } = collection;
+          const { url, description, firstname,lastname, createdAt } = collection;
           const { photourl } = collection.author;
           const postId = collection._id;
-
+          const style=firstname?.charAt(0).toUpperCase() + lastname?.charAt(0).toUpperCase()
+          console.log(style);
           const authorId = collection.author._id;
           const liked = (likes?.[postId] ?? 0) > 0; // If you want to show filled heart
 
@@ -130,21 +132,35 @@ const Collection = () => {
               className="w-full max-w-lg bg-white rounded-xl shadow-lg my-4 border border-gray-200 overflow-hidden"
 
             >
-              <Link to={"/user/" + name} onClick={() => fetchUserView(authorId)}>
+              <Link to={"/user/" + authorId} onClick={() => fetchUserView(authorId)}>
                 {/* User info */}
                 <div className="flex items-center justify-between w-full h-16">
                   {/* Left Side - Avatar + Name */}
                   <div className="flex items-center">
 
-                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                    {/* <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                       <img
                         src={photourl || "https://placehold.co/50x50/E5E7EB/4B5563?text=User"}
                         alt="User avatar"
                         className="w-full h-full object-cover"
                       />
+                    </div> */}
+                    {/* Profile Picture */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                      {photourl !== "http://peoplepost-default.png" ? (
+                        <img
+                          src={photourl}
+                          alt="User avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
+                          {style}
+                        </div>
+                      )}
                     </div>
                     <div className="font-semibold text-gray-900 text-sm">
-                      {name}
+                      {firstname} {lastname}
                     </div>
 
                   </div>

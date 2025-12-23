@@ -164,7 +164,7 @@ function AppRoutes() {
         <Route path="/group" element={<Group />} />
         <Route path="/comment/:targetpostid"element={<Comment/>}/>
         <Route path="/like/:targetpostid"element={<Like/>}/>
-        <Route path="/user/:firstname" element={<Userclick/>}/>
+        <Route path="/user/:userid" element={<Userclick/>}/>
         <Route path="/post/user/:targetpostid" element={<Userpostclick/>}/>
         <Route path="/education/:educationid" element={<Editeducation/>}/>
         <Route path="/experience/:experienceid" element={<Editexperience/>}/>

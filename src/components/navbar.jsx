@@ -100,13 +100,20 @@ const Navbar = () => {
 
                 <div className="dropdown dropdown-end flex mx-5">
                   <p className='hidden lg:block text-sm mr-2 mx-4 my-2'>Welcome, <span className="font-bold">{user.firstname}</span></p>
-                  <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+
+
+                  <div tabIndex={0} role="button" className="btn border-amber-50 btn-ghost btn-circle avatar">
                     <div className="w-10 rounded-full my-4">
-                      <img
-                        alt="user photo"
-                        src={user.photourl}
-                        onError={(e) => e.target.src = 'https://placehold.co/40x40/94A3B8/FFFFFF?text=NA'}
-                      />
+                      {user?.photourl !== "http://peoplepost-default.png" ? (
+                        <img
+                          alt="user photo"
+                          src={user.photourl}
+                          onError={(e) => e.target.src = 'https://placehold.co/40x40/94A3B8/FFFFFF?text=NA'}
+                        />) : (
+                        <div className="items-center w-10 text-center rounded-full my-2 mr-4">
+                          {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <ul

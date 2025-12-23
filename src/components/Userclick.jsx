@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom";
 import { baseurl } from "../utils/constants";
 
 const Userclick = () => {
-  const { firstname } = useParams();
+  const { userid } = useParams();
+  console.log(userid);
+
 
   const [user, setUser] = useState(null);
   const [experienceList, setExperienceList] = useState([]);
@@ -12,7 +14,7 @@ const Userclick = () => {
   // Fetch USER by firstname
   const fetchUser = async () => {
     try {
-      const res = await axios.get(baseurl + "/user/" + firstname, {
+      const res = await axios.get(baseurl + "/user/" + userid, {
         withCredentials: true,
       });
       setUser(res.data);
@@ -23,7 +25,7 @@ const Userclick = () => {
 
   useEffect(() => {
     fetchUser();
-  }, [firstname]);
+  }, [userid]);
 
   // Fetch EDUCATION of clicked user
   const fetchEducation = async () => {
@@ -68,7 +70,6 @@ const Userclick = () => {
     }, {})
   );
 
-
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -78,18 +79,19 @@ const Userclick = () => {
 
           {/* Profile Image */}
           <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gray-200">
-            {user?.photourl ? (
+            {user?.photourl !== "http://peoplepost-default.png" ? (
               <img
-                src={user.photourl}
-                alt={`${user.firstname} ${user.lastname}`}
+                src={user?.photourl}
+                alt={`${user?.firstname} ${user?.lastname}`}
                 className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
-                👤
+                {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
+
 
           {/* Name */}
           <h1 className="text-xl font-semibold text-gray-900 text-center">

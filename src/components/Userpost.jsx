@@ -125,7 +125,7 @@ const Userpost = () => {
 
         {userpostsave.map((post) => {
 
-          const { url, description, name, photourl, _id, createdAt, userPostViewCount } = post;
+          const { url, description, firstname,lastname, photourl, _id, createdAt, userPostViewCount } = post;
           const liked = (likes?.[_id] ?? 0) > 0;
           const { author } = post;
           return (
@@ -135,7 +135,7 @@ const Userpost = () => {
                             transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200'
             >
 
-              <Link to={"/user/" + name} onClick={() => fetchUserView(author)}>
+              <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
                 <div className="flex items-center p-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
                     <img
@@ -144,7 +144,7 @@ const Userpost = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="font-semibold text-gray-900">{name || "User"}</div>
+                  <div className="font-semibold text-gray-900">{firstname || "User"} {lastname || "User"}</div>
                   <div className="ml-auto text-gray-500 text-sm font-semibold">{createdAt}</div>
                 </div>
               </Link>
