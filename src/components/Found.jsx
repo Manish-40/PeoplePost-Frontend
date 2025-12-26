@@ -52,7 +52,7 @@ export default function Found() {
                     className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
+                  <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">
                     {(user?.firstname?.charAt(0).toUpperCase() || "") +
                       (user?.lastname?.charAt(0).toUpperCase() || "")}
                   </div>

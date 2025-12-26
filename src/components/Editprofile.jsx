@@ -155,6 +155,11 @@ const Editprofile = ({ user }) => {
   const [showtoast, setshowtoast] = useState(false);
   const [error, seterror] = useState("");
   const { userViewCount } = user;
+  const {viewedBy}=user;
+  viewedBy.map((e)=>{
+    console.log("viewedby firstname",e._id);
+  })
+  
 
   const [open, setOpen] = useState(false);
   const [school, setSchool] = useState("");
@@ -226,7 +231,8 @@ const Editprofile = ({ user }) => {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-
+      console.log("response of patch",res.data.data);
+      
       dispatch(addUser(res?.data?.data));
       
       setshowtoast(true);
@@ -381,7 +387,7 @@ const Editprofile = ({ user }) => {
             <h3 className="text-lg font-semibold text-gray-800">Profile Viewed By:</h3>
 
             {user?.viewedBy?.length > 0 ? (
-              user.viewedBy.map((e) => (
+              user?.viewedBy.map((e) => (
                 <div
                   key={e._id}
                   className="p-3 mb-2 border rounded hover:shadow transition"

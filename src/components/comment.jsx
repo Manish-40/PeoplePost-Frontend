@@ -92,6 +92,8 @@ const Comment = () => {
     }
   }
 
+
+
   // ---------------------------
   // Render
   // ---------------------------
@@ -105,20 +107,30 @@ const Comment = () => {
                      border border-gray-200 overflow-hidden"
         >
           {/* User info */}
-          <Link to={"/user/" + post.name} onClick={() => fetchUserView(post.author)}>
+          <Link to={"/user/" + post?.author?._id} onClick={() => fetchUserView(post.author)}>
             <div className="flex items-center p-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
-                <img
-                  src={
-                    post.photourl || "user"
-                    // "https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo="
-                  }
-                  alt="User avatar"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="font-semibold text-gray-900 text-sm">
-                {post.name || "User"}
+              {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                  <img
+                    alt="photo"
+                    className="w-full h-full object-cover"
+                    src={post.photourl}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        "https://placehold.co/80x80/94A3B8/FFFFFF?text=NA";
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-800 rounded-full">
+                  {(post.firstname?.charAt(0)?.toUpperCase() || "") +
+                    (post.lastname?.charAt(0)?.toUpperCase() || "")}
+                </div>
+              )}
+
+              <div className="font-semibold text-gray-900 text-sm ml-2">
+                {post.firstname || "User"} {post.lastname || "User"}
               </div>
 
               <div className="font-semibold text-gray-900 text-sm ml-10">
@@ -145,7 +157,7 @@ const Comment = () => {
           {/* Description */}
           <div className="p-3">
             <p className="text-gray-700 text-sm leading-tight line-clamp-2">
-              <span className="font-semibold">{post.name || "User"}</span>{" "}
+              <span className="font-semibold">{post.firstname || "User"} {post.lastname || "User"}</span>{" "}
               {post.description}
             </p>
           </div>
@@ -161,14 +173,25 @@ const Comment = () => {
               {!loading &&
                 comments.map((c) => (
                   <div key={c._id} className="border-b pb-1 flex items-center gap-2">
-                    <img
-                      src={
-                        c.user?.photourl ||
-                        "https://media.istockphoto.com/id/1131164548/vector/avatar-5.jpg?s=612x612&w=0&k=20&c=CK49ShLJwDxE4kiroCR42kimTuuhvuo2FH5y_6aSgEo="
-                      }
-                      alt="avatar"
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
+                    {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
+                      <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                        <img
+                          alt="photo"
+                          className="w-full h-full object-cover"
+                          src={post.photourl}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://placehold.co/80x80/94A3B8/FFFFFF?text=NA";
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-800 rounded-full">
+                        {(post.firstname?.charAt(0)?.toUpperCase() || "") +
+                          (post.lastname?.charAt(0)?.toUpperCase() || "")}
+                      </div>
+                    )}
                     <span className="font-semibold">{c.user?.firstname || "User"}:</span>
                     <span className="text-gray-700">{c.text}</span>
                     <span className="text-gray-900 text-sm font-semibold">{c.createdAt}</span>

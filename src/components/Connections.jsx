@@ -89,8 +89,19 @@ const Connections = () => {
               >
 
 
-                <div>
-                  <img alt="photo" className="w-20 h-20 rounded-full object-cover" src={photourl} onError={(e) => e.target.src = 'https://placehold.co/80x80/94A3B8/FFFFFF?text=NA'} />
+                <div className="flex items-center justify-center">
+                  {photourl && photourl !== "http://peoplepost-default.png" ? (
+                    <img
+                      src={photourl}
+                      alt={firstname || "User"}
+                      className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">
+                      {(firstname?.charAt(0).toUpperCase() || "") +
+                        (lastname?.charAt(0).toUpperCase() || "")}
+                    </div>
+                  )}
                 </div>
 
 

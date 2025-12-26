@@ -88,14 +88,27 @@ const Requests = () => {
             className='flex flex-col sm:flex-row items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200'
           >
 
-            <div className="flex-shrink-0 mb-4 sm:mb-0">
-              <img
-                alt="photo"
-                className="w-20 h-20 rounded-full object-cover shadow"
-                src={photourl}
-                onError={(e) => e.target.src = 'https://placehold.co/80x80/94A3B8/FFFFFF?text=NA'}
-              />
-            </div>
+            {photourl && photourl !== "http://peoplepost-default.png" ? (
+              <div className="flex-shrink-0 mb-4 sm:mb-0 items-center justify-center">
+                <img
+                  alt="photo"
+                  className="w-20 h-20 rounded-full object-cover shadow border-2 border-gray-300"
+                  src={photourl}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      "https://placehold.co/80x80/94A3B8/FFFFFF?text=NA";
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-2xl text-gray-800 shadow border-2 border-gray-300">
+                {(firstname?.charAt(0)?.toUpperCase() || "") +
+                  (lastname?.charAt(0)?.toUpperCase() || "")}
+              </div>
+            )}
+
+
 
 
             <div className='flex-grow mx-0 sm:mx-6 text-center sm:text-left mb-4 sm:mb-0'>
