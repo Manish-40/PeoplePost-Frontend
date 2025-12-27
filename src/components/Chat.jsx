@@ -20,9 +20,14 @@ const Chat = () => {
       const chat = await axios.get(baseurl + "/chat/" + targetUserId, { withCredentials: true });
       const chatMessages = chat?.data?.messages.map(msg => {
         const { senderId, text } = msg;
-        return { firstname: senderId?.firstname, lastname: senderId?.lastname, text };
+        const {createdAt}=msg; 
+        return { firstname: senderId?.firstname, lastname: senderId?.lastname, text,createdAt};
       });
       setMessages(chatMessages);
+      console.log(chat);
+      console.log(chat?.data?.messages[0]?.createdAt);
+      
+      
     } catch (error) {
       console.error("Failed to fetch chat messages:", error);
     }
@@ -80,9 +85,8 @@ const Chat = () => {
             >
 
               <div className={`p-3 rounded-lg max-w-[80%] break-words ${user.firstname === msg.firstname ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-400 text-black rounded-bl-none'}`}>
-                <div className='font-semibold text-sm'>
-                  {msg.firstname}
-                </div>
+                <div className="text-xs text-gray-200 mb-1">{msg.createdAt}</div> {/* ✅ formatted time */}
+                <div className="font-semibold text-sm">{msg.firstname}</div>
                 <div>{msg.text}</div>
               </div>
             </div>
