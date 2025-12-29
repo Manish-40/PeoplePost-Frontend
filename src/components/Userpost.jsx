@@ -17,6 +17,7 @@ const Userpost = () => {
   const userpostsave = useSelector((store) => store.userpost);
   const likes = useSelector((store) => store.like);
   //   console.log(userpostsave.author._id);
+console.log(userpostsave);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogHandleToOpen = (id) => {
@@ -105,7 +106,7 @@ const Userpost = () => {
       // FIX: Update Redux state so post disappears from UI
       const updatedPosts = userpostsave.filter(post => post._id !== selectedPostId);
       dispatch(addUserPost(updatedPosts));
-
+      
       setLoader(false);
     } catch (error) {
       setLoader(false);
@@ -177,7 +178,7 @@ const Userpost = () => {
 
                 <div className='p-4'>
                   <p className="text-gray-700 text-base leading-tight">
-                    <span className="font-semibold">{name || "User"}</span> {description}
+                    <span className="font-semibold">{firstname|| "User"} {lastname || "User"}</span> {description}
                   </p>
                 </div>
               </Link>

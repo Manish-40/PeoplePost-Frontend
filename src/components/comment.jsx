@@ -72,7 +72,8 @@ const Comment = () => {
         { text },
         { withCredentials: true }
       );
-
+      console.log(res.data);
+      
       // Add new comment to local state and Redux store
       setComments((prev) => [...prev, res.data]);
       dispatch(addComment(res.data));
@@ -173,12 +174,12 @@ const Comment = () => {
               {!loading &&
                 comments.map((c) => (
                   <div key={c._id} className="border-b pb-1 flex items-center gap-2">
-                    {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
+                    {c.user?.photourl && c.user?.photourl !== "http://peoplepost-default.png" ? (
                       <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                         <img
                           alt="photo"
                           className="w-full h-full object-cover"
-                          src={post.photourl}
+                          src={c.user?.photourl}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src =
@@ -188,8 +189,8 @@ const Comment = () => {
                       </div>
                     ) : (
                       <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-800 rounded-full">
-                        {(post.firstname?.charAt(0)?.toUpperCase() || "") +
-                          (post.lastname?.charAt(0)?.toUpperCase() || "")}
+                        {(c.user?.firstname?.charAt(0)?.toUpperCase() || "") +
+                          (c.user?.lastname?.charAt(0)?.toUpperCase() || "")}
                       </div>
                     )}
                     <span className="font-semibold">{c.user?.firstname || "User"}:</span>
