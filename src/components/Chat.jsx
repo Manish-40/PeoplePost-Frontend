@@ -35,12 +35,19 @@ const Chat = () => {
 
   useEffect(() => {
     fetchChatMessages();
-
   }, [targetUserId]);
   
   useEffect(() => {
     autoScroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages])
+
+  // useEffect(() => {
+  //   const loadMessages=async()=>{
+  //     const fetchedMessages=await fetchChatMessages();
+  //     setMessages(fetchedMessages.messages);
+  //   };
+  //     loadMessages();
+  //   },[targetUserId]);
 
   useEffect(() => {
     if (!userId) {
@@ -50,8 +57,8 @@ const Chat = () => {
     const socket = createSocketConnection();
     socket.emit("joinChat", { firstname: user.firstname, userId, targetUserId });
 
-    socket.on("messageReceived", ({ firstname, lastname, text }) => {
-      setMessages(messages => [...messages, { firstname, lastname, text }]);
+    socket.on("messageReceived", ({ firstname, lastname, text ,createdAt}) => {
+      setMessages(messages => [...messages, { firstname, lastname, text ,createdAt}]);
     });
 
     return () => {
