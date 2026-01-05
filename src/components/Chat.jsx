@@ -20,6 +20,7 @@ const Chat = () => {
   const [photourl, setPhotourl] = useState("");
   const [targetFirstname, setFirstname] = useState("");
   const [targetLastname, setLastname] = useState("");
+  const [userLoaded, setUserLoaded] = useState(false);
 
   const fetchChatMessages = async () => {
     try {
@@ -30,29 +31,39 @@ const Chat = () => {
         return { firstname: senderId?.firstname, lastname: senderId?.lastname, text, createdAt };
       });
       setMessages(chatMessages);
-      setIsOnline(chat.data.targetUser.isOnline);
-      setLastSeen(chat.data.targetUser.lastSeen);
-      setPhotourl(chat.data.targetUser.photourl);
-      setFirstname(chat.data.targetUser.firstname);
-      setLastname(chat.data.targetUser.lastname);
-      console.log(chat);
-      console.log(chat?.data?.messages[0]?.createdAt);
-      console.log(targetFirstname);
-
-
-
     } catch (error) {
       console.error("Failed to fetch chat messages:", error);
     }
   };
+   /* ================= USER INFO (HEADER) ================= */
+  const fetchTargetUser = async () => {
+    try {
+      const res = await axios.get(
+        `${baseurl}/user/${targetUserId}`,
+        { withCredentials: true }
+      );
+
+      setFirstname(res.data.firstname);
+      setLastname(res.data.lastname);
+      setPhotourl(res.data.photourl);
+      setIsOnline(res.data.isOnline);
+      setLastSeen(res.data.lastSeen);
+
+      setUserLoaded(true);
+    } catch (err) {
+      console.error("User fetch error:", err);
+    }
+  };
 
   useEffect(() => {
+    fetchTargetUser();
     fetchChatMessages();
   }, [targetUserId]);
 
   useEffect(() => {
     autoScroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages])
+
 
   // useEffect(() => {
   //   const loadMessages=async()=>{
@@ -97,13 +108,14 @@ const Chat = () => {
     console.log("date", new Date(lastSeen).toLocaleString());
   }
   const formatLastSeen = (lastSeen) => {
-    if (!lastSeen) return "Unavailable";
+    if (!lastSeen) return "Last seen recently";
 
     const date = new Date(lastSeen);
     if (isNaN(date.getTime())) return "Unavailable";
 
     return date.toLocaleString();
   };
+
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 text-black p-4 sm:p-0'>
@@ -113,26 +125,40 @@ const Chat = () => {
         {/* Chat header */}
         <div className='p-5 border-b border-gray-400 flex items-center gap-3'>
           {/* Avatar */}
-          {photourl && photourl !== "http://peoplepost-default.png" ? (
-            <img
-              src={photourl}
-              alt={targetFirstname || "User"}
-              className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
-            />
+          {userLoaded ? (
+            photourl && photourl !== "http://peoplepost-default.png" ? (
+              <img
+                src={photourl}
+                alt={targetFirstname}
+                className="w-20 h-20 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center text-4xl">
+                {targetFirstname?.[0]}{targetLastname?.[0]}
+              </div>
+            )
           ) : (
-            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">
-              {(targetFirstname?.charAt(0).toUpperCase() || "") +
-                (targetLastname?.charAt(0).toUpperCase() || "")}
-            </div>
+            <div className="w-20 h-20 rounded-full bg-gray-300 animate-pulse" />
           )}
+
 
           {/* Name and status */}
           <div className="flex flex-col">
-            <h1 className='text-2xl font-semibold'>{targetFirstname} {targetLastname}</h1>
-            <span className="text-sm text-gray-600">
-              {isOnline ? "🟢 Online" : `Last seen: ${formatLastSeen(lastSeen)}`}
-            </span>
+            {userLoaded ? (
+              <>
+                <h1 className="text-2xl font-semibold">
+                  {targetFirstname} {targetLastname}
+                </h1>
+
+                <span className="text-sm text-gray-600">
+                  {isOnline ? "🟢 Online" : `Last seen: ${formatLastSeen(lastSeen)}`}
+                </span>
+              </>
+            ) : (
+              <span className="text-sm text-gray-500">Loading user…</span>
+            )}
           </div>
+
         </div>
 
 
