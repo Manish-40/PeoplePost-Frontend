@@ -56,7 +56,7 @@ const UserPostclick = () => {
                   <img
                     src={photourl}
                     alt="User avatar"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">

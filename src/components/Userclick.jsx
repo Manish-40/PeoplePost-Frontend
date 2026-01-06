@@ -83,7 +83,7 @@ const Userclick = () => {
               <img
                 src={user?.photourl}
                 alt={`${user?.firstname} ${user?.lastname}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">

@@ -322,7 +322,10 @@ const Editprofile = ({ user }) => {
 
   const fetchViewedBy = async () => {
     try {
-      await axios.get(baseurl + "/user/" + user._id, { withCredentials: true });
+      const res=await axios.get(baseurl + "/user/" + user._id, { withCredentials: true });
+      console.log("/user/:user._id",res.data);
+      
+      dispatch(addUser(res.data));
     }
     catch (error) {
       console.log(error);
@@ -345,7 +348,7 @@ const Editprofile = ({ user }) => {
               <img
                 src={previewUrl}
                 alt={`${firstname} ${lastname}`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">

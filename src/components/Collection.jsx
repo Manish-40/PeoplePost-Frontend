@@ -151,10 +151,10 @@ const Collection = () => {
                         <img
                           src={photourl}
                           alt="User avatar"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                       ) : (
-                        <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-400 rounded-full">
+                        <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
                           {style}
                         </div>
                       )}

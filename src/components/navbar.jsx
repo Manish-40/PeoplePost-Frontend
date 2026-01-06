@@ -54,7 +54,7 @@ const Navbar = () => {
 
           <div className="flex-1 flex justify-start items-center gap-4 mb-2 md:mb-0">
             <Link to="/" className="text-2xl sm:text-3xl font-extrabold tracking-tight hover:text-blue-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md py-1 px-2">
-              PeoplePost
+              DevMatch
             </Link>
             {user &&
               <>
@@ -109,6 +109,7 @@ const Navbar = () => {
                           alt="user photo"
                           src={user.photourl}
                           onError={(e) => e.target.src = 'https://placehold.co/40x40/94A3B8/FFFFFF?text=NA'}
+                          className='w-full h-full object-contain'
                         />) : (
                         <div className="items-center w-10 text-center rounded-full my-2 mr-4">
                           {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}

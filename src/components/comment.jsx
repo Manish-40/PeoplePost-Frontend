@@ -114,7 +114,7 @@ const Comment = () => {
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                   <img
                     alt="photo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     src={post.photourl}
                     onError={(e) => {
                       e.target.onerror = null;
@@ -124,7 +124,7 @@ const Comment = () => {
                   />
                 </div>
               ) : (
-                <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-800 rounded-full">
+                <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
                   {(post.firstname?.charAt(0)?.toUpperCase() || "") +
                     (post.lastname?.charAt(0)?.toUpperCase() || "")}
                 </div>
@@ -178,7 +178,7 @@ const Comment = () => {
                       <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                         <img
                           alt="photo"
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                           src={c.user?.photourl}
                           onError={(e) => {
                             e.target.onerror = null;
@@ -188,7 +188,7 @@ const Comment = () => {
                         />
                       </div>
                     ) : (
-                      <div className="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-800 rounded-full">
+                      <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
                         {(c.user?.firstname?.charAt(0)?.toUpperCase() || "") +
                           (c.user?.lastname?.charAt(0)?.toUpperCase() || "")}
                       </div>

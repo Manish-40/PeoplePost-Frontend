@@ -49,7 +49,7 @@ export default function Found() {
                   <img
                     src={user.photourl}
                     alt={user?.firstname || "User"}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                    className="w-20 h-20 rounded-full object-contain border-2 border-gray-300"
                   />
                 ) : (
                   <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">

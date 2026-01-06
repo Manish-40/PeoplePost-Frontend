@@ -17,7 +17,7 @@ const Userpost = () => {
   const userpostsave = useSelector((store) => store.userpost);
   const likes = useSelector((store) => store.like);
   //   console.log(userpostsave.author._id);
-console.log(userpostsave);
+  console.log(userpostsave);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogHandleToOpen = (id) => {
@@ -106,7 +106,7 @@ console.log(userpostsave);
       // FIX: Update Redux state so post disappears from UI
       const updatedPosts = userpostsave.filter(post => post._id !== selectedPostId);
       dispatch(addUserPost(updatedPosts));
-      
+
       setLoader(false);
     } catch (error) {
       setLoader(false);
@@ -138,13 +138,14 @@ console.log(userpostsave);
             >
 
               <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
-                <div className="flex items-center p-4">
-                  <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
+                <div className="flex items-center p-4 shrink-0">
+                <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
+                
                     {photourl !== "http://peoplepost-default.png" ? (
                       <img
                         src={photourl}
                         alt="User avatar"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">
@@ -168,7 +169,7 @@ console.log(userpostsave);
                 <div className='relative w-full ' style={{ paddingBottom: '100%' }}>
                   {url && <img
                     alt="Post photo"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-contain"
                     src={url}
                     onError={(e) => e.target.src = "https://placehold.co/600x600/E5E7EB/4B5563?text=Image+Not+Found"}
                   />}
@@ -178,7 +179,7 @@ console.log(userpostsave);
 
                 <div className='p-4'>
                   <p className="text-gray-700 text-base leading-tight">
-                    <span className="font-semibold">{firstname|| "User"} {lastname || "User"}</span> {description}
+                    <span className="font-semibold">{firstname || "User"} {lastname || "User"}</span> {description}
                   </p>
                 </div>
               </Link>
