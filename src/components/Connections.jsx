@@ -94,7 +94,7 @@ const Connections = () => {
                     <img
                       src={photourl}
                       alt={firstname || "User"}
-                      className="w-20 h-20 rounded-full object-contain border-2 border-gray-300"
+                      className="w-20 h-20 rounded-full object-contain border-1 border-gray-300"
                     />
                   ) : (
                     <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">

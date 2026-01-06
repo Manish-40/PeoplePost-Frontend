@@ -145,7 +145,7 @@ const Userpost = () => {
                       <img
                         src={photourl}
                         alt="User avatar"
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain border-1 border-gray-300"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">

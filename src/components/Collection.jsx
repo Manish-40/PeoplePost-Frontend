@@ -176,7 +176,7 @@ const Collection = () => {
               <Link to={"/post/user/" + collection._id} onClick={() => fetchUserPostView(postId)}>
                 {url &&
                   <div className="w-full max-h-[600px] bg-gray-100 rounded-lg overflow-hidden">
-                    <img src={url} alt="Post" className="w-full h-full" />
+                    <img src={url} alt="Post" className="w-full h-full border-1 border-gray-300" />
                   </div>
                 }
 

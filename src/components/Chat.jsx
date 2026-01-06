@@ -130,10 +130,10 @@ const Chat = () => {
               <img
                 src={photourl}
                 alt={targetFirstname}
-                className="w-20 h-20 rounded-full object-contain"
+                className="w-20 h-20 rounded-full object-contain border-1 border-gray-300"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-gray-300 flex items-center justify-center text-4xl">
+              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">
                 {targetFirstname?.[0]}{targetLastname?.[0]}
               </div>
             )

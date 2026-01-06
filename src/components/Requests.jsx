@@ -92,7 +92,7 @@ const Requests = () => {
               <div className="flex-shrink-0 mb-4 sm:mb-0 items-center justify-center">
                 <img
                   alt="photo"
-                  className="w-20 h-20 rounded-full object-contain shadow border-2 border-gray-300"
+                  className="w-20 h-20 rounded-full object-contain shadow border-1 border-gray-300"
                   src={photourl}
                   onError={(e) => {
                     e.target.onerror = null;

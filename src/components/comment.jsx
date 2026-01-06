@@ -178,7 +178,7 @@ const Comment = () => {
                       <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                         <img
                           alt="photo"
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-contain border-1 border-gray-300"
                           src={c.user?.photourl}
                           onError={(e) => {
                             e.target.onerror = null;
