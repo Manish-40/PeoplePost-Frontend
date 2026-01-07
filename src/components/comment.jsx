@@ -111,7 +111,7 @@ const Comment = () => {
           <Link to={"/user/" + post?.author?._id} onClick={() => fetchUserView(post.author)}>
             <div className="flex items-center p-3">
               {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
-                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
                   <img
                     alt="photo"
                     className="w-full h-full object-contain"
@@ -175,10 +175,10 @@ const Comment = () => {
                 comments.map((c) => (
                   <div key={c._id} className="border-b pb-1 flex items-center gap-2">
                     {c.user?.photourl && c.user?.photourl !== "http://peoplepost-default.png" ? (
-                      <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                      <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
                         <img
                           alt="photo"
-                          className="w-full h-full object-contain border-1 border-gray-300"
+                          className="w-full h-full object-contain"
                           src={c.user?.photourl}
                           onError={(e) => {
                             e.target.onerror = null;

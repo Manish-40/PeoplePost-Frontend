@@ -139,13 +139,13 @@ const Userpost = () => {
 
               <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
                 <div className="flex items-center p-4 shrink-0">
-                <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
+                <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 border-1 border-gray-300">
                 
                     {photourl !== "http://peoplepost-default.png" ? (
                       <img
                         src={photourl}
                         alt="User avatar"
-                        className="w-full h-full object-contain border-1 border-gray-300"
+                        className="w-full h-full object-contain"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">

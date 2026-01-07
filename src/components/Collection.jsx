@@ -146,7 +146,7 @@ const Collection = () => {
                       />
                     </div> */}
                     {/* Profile Picture */}
-                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
                       {photourl !== "http://peoplepost-default.png" ? (
                         <img
                           src={photourl}
