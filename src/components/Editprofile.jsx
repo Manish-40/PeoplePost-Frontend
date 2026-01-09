@@ -155,11 +155,11 @@ const Editprofile = ({ user }) => {
   const [showtoast, setshowtoast] = useState(false);
   const [error, seterror] = useState("");
   const { userViewCount } = user;
-  const {viewedBy}=user;
-  viewedBy.map((e)=>{
-    console.log("viewedby firstname",e._id);
+  const { viewedBy } = user;
+  viewedBy.map((e) => {
+    console.log("viewedby firstname", e._id);
   })
-  
+
 
   const [open, setOpen] = useState(false);
   const [school, setSchool] = useState("");
@@ -231,10 +231,10 @@ const Editprofile = ({ user }) => {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log("response of patch",res.data.data);
-      
+      console.log("response of patch", res.data.data);
+
       dispatch(addUser(res?.data?.data));
-      
+
       setshowtoast(true);
       setTimeout(() => setshowtoast(false), 3000);
     } catch (err) {
@@ -322,9 +322,9 @@ const Editprofile = ({ user }) => {
 
   const fetchViewedBy = async () => {
     try {
-      const res=await axios.get(baseurl + "/user/" + user._id, { withCredentials: true });
-      console.log("/user/:user._id",res.data);
-      
+      const res = await axios.get(baseurl + "/user/" + user._id, { withCredentials: true });
+      console.log("/user/:user._id", res.data);
+
       dispatch(addUser(res.data));
     }
     catch (error) {
@@ -352,7 +352,7 @@ const Editprofile = ({ user }) => {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
-                {firstname.charAt(0).toUpperCase()+lastname.charAt(0).toUpperCase()}
+                {firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()}
               </div>
             )}
           </div>
@@ -388,15 +388,31 @@ const Editprofile = ({ user }) => {
 
             {/* Viewed By List */}
             <h3 className="text-lg font-semibold text-gray-800">Profile Viewed By:</h3>
-
             {user?.viewedBy?.length > 0 ? (
               user?.viewedBy.map((e) => (
+                <Link to={"/user/"+e._id}>
                 <div
                   key={e._id}
-                  className="p-3 mb-2 border rounded hover:shadow transition"
+                  className="flex p-3 mb-2 border rounded hover:shadow transition"
                 >
-                  {e.firstname} {e.lastname}
+                  {/* Profile Picture */}
+                  <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
+                    {e.photourl !== "http://peoplepost-default.png" ? (
+                      <img
+                        src={e.photourl}
+                        alt="User avatar"
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
+                        {(e.firstname?.charAt(0).toUpperCase() || "") +
+                          (e.lastname?.charAt(0).toUpperCase() || "")}
+                      </div>
+                    )}
+                  </div>
+                  <div className='mt-2'>{e.firstname} {e.lastname}</div>
                 </div>
+                </Link>
               ))
             ) : (
               <p className="text-gray-500 text-sm">No viewers yet.</p>
