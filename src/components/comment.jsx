@@ -73,7 +73,7 @@ const Comment = () => {
         { withCredentials: true }
       );
       console.log(res.data);
-      
+
       // Add new comment to local state and Redux store
       setComments((prev) => [...prev, res.data]);
       dispatch(addComment(res.data));
@@ -109,7 +109,7 @@ const Comment = () => {
         >
           {/* User info */}
           <Link to={"/user/" + post?.author?._id} onClick={() => fetchUserView(post.author)}>
-            <div className="flex items-center p-3">
+            {/* <div className="flex items-center p-3">
               {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
                   <img
@@ -137,6 +137,41 @@ const Comment = () => {
               <div className="font-semibold text-gray-900 text-sm ml-10">
                 {post.createdAt}
               </div>
+            </div> */}
+            <div className="flex items-center justify-between w-full h-16">
+              {/* Left Side - Avatar + Name */}
+              <div className="flex items-center">
+
+                {/* <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
+                      <img
+                        src={photourl || "https://placehold.co/50x50/E5E7EB/4B5563?text=User"}
+                        alt="User avatar"
+                        className="w-full h-full object-cover"
+                      />
+                    </div> */}
+                {/* Profile Picture */}
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
+                  {post.photourl && post.photourl !== "http://peoplepost-default.png" ? (
+                    <img
+                      src={post.photourl}
+                      alt="User avatar"
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
+                      {(post.firstname?.charAt(0).toUpperCase() || "") +
+                        (post.lastname?.charAt(0).toUpperCase() || "")}
+                    </div>
+                  )}
+                </div>
+                <div className="font-semibold text-gray-900 text-sm">
+                  {post.firstname} {post.lastname}
+                </div>
+
+              </div>
+
+              {/* Right Side - Time */}
+              <div className="text-gray-500 text-xs mr-5">{post.createdAt}</div>
             </div>
           </Link>
 
@@ -193,9 +228,21 @@ const Comment = () => {
                           (c.user?.lastname?.charAt(0)?.toUpperCase() || "")}
                       </div>
                     )}
-                    <span className="font-semibold">{c.user?.firstname || "User"}:</span>
-                    <span className="text-gray-700">{c.text}</span>
-                    <span className="text-gray-900 text-sm font-semibold">{c.createdAt}</span>
+                    <div className="flex items-center justify-between w-full gap-2">
+                      <div className="flex flex-wrap gap-1">
+                        <span className="font-semibold">
+                          {c.user?.firstname || "User"}:
+                        </span>
+                        <span className="text-gray-700 break-words">
+                          {c.text}
+                        </span>
+                      </div>
+
+                      <span className="text-gray-900 text-sm font-semibold whitespace-nowrap mr-5">
+                        {c.createdAt}
+                      </span>
+                    </div>
+
                   </div>
                 ))}
             </div>
