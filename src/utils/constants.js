@@ -1,4 +1,4 @@
 export const baseurl=import.meta.env.VITE_BACKEND_URL
-export const baseurlIndicator=import.meta.env.VITE_BACKEND_ONLINE_INDICATOR_URL
+export const baseurlIndicator='http://localhost:3001'
 //import.meta.env.VITE_BACKEND_URL
 
