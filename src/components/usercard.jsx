@@ -1,11 +1,31 @@
 import axios from "axios";
-import { baseurl } from "../utils/constants";
+import { baseurl, baseurlIndicator } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeuserfeed } from "../utils/feedslice";
+import { useEffect, useState } from "react";
 
 const UserCard = ({ user }) => {
   const { _id, firstname, lastname, age, gender, about, photourl } = user;
   const dispatch = useDispatch();
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + _id, { withCredentials: true });
+        console.log("res-ind: ", response.data.online)
+        setImOnline(response.data.online);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [_id]);
 
   const defaultPhoto =
     "https://openseauserdata.com/files/7f16cec1cc177a7e148067006e73c02a.png";
@@ -24,11 +44,24 @@ const UserCard = ({ user }) => {
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden max-w-xs mx-auto my-3 border border-gray-200 hover:shadow-xl transition-all duration-300">
         {/* Header */}
         <div className="text-center py-3 bg-gray-50 border-b border-gray-200">
+
           <h3 className="tracking-wide text-3xl font-bold text-gray-800">
+
+            {/* {imOnline === true ? "online" : "offline"} */}
             Add to Friend
           </h3>
         </div>
+
         <div className="relative w-full aspect-square bg-gray-100 flex items-center justify-center">
+          {imOnline === true ? (<span className="absolute top-0 right-0 flex h-3 w-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+          </span>) : (
+            <span className="absolute top-0 right-0 flex h-3 w-3">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+            </span>
+          )}
           <img
             src={photourl ? `${baseurl}/${photourl}` : defaultPhoto}
             alt={`${firstname} ${lastname}`}

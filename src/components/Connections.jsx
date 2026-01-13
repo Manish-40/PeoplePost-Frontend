@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { baseurl } from '../utils/constants';
+import { useEffect, useState } from 'react'
+import { baseurl, baseurlIndicator } from '../utils/constants';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addConnection } from '../utils/connectionslice';
@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 
 const Connections = () => {
   const connections = useSelector((store) => store.connections);
+
+
   var count = 0;
   const dispatch = useDispatch();
 
@@ -28,6 +30,34 @@ const Connections = () => {
   useEffect(() => {
     fetchconnection();
   }, []);
+
+
+  const [imOnline, setImOnline] = useState({});
+
+  useEffect(() => {
+    if (!Array.isArray(connections) || connections.length === 0) return;
+    const checkStatus = async () => {
+      try {
+        const results = await Promise.all(
+          connections.map(conn =>
+            axios.get(baseurlIndicator + "/heartbeat/" + conn._id, { withCredentials: true })
+          ));
+        const statusMap = {};
+        results.forEach((res, index) => {
+          statusMap[connections[index]._id] = res.data.online;
+        });
+
+        setImOnline(statusMap);
+      } catch (err) {
+        setImOnline({});
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [connections?.length]);
 
   if (!connections) return;
 
@@ -67,6 +97,7 @@ const Connections = () => {
 
     }
     </div> */}
+
       <div className='my-10 max-w-4xl mx-auto px-4 font-sans'>
 
         <div className="flex justify-between items-center mb-8">
@@ -83,13 +114,16 @@ const Connections = () => {
           const { _id, firstname, lastname, age, gender, about, photourl } = user;
           return (
             <>
+
+
               <div
                 key={_id}
                 className='flex items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200'
               >
 
+                {/* {imOnline[_id] === true ? "online" : "offline"} */}
 
-                <div className="flex items-center justify-center">
+                <div className="relative flex items-center justify-center">
                   {photourl && photourl !== "http://peoplepost-default.png" ? (
                     <img
                       src={photourl}
@@ -102,9 +136,18 @@ const Connections = () => {
                         (lastname?.charAt(0).toUpperCase() || "")}
                     </div>
                   )}
+
+
+                  {imOnline[_id] === true ? (<span className="absolute bottom-15 right-1 flex h-3 w-3">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                  </span>) : (
+                    <span className="absolute bottom-15 right-1 flex h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                    </span>
+                  )}
                 </div>
-
-
                 <div className='text-left mx-4 flex-grow'>
                   <h2 className='font-extrabold text-xl text-gray-900'>{firstname + " " + lastname}</h2>
                   {age && gender && <p className="text-sm text-gray-600 my-1">{age} years old, {gender}</p>}
@@ -124,6 +167,7 @@ const Connections = () => {
 
         })}
       </div>
+
     </>
   );
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { baseurl } from "../utils/constants";
+import { baseurl, baseurlIndicator } from "../utils/constants";
 
 const Userclick = () => {
   const { userid } = useParams();
@@ -70,6 +70,25 @@ const Userclick = () => {
     }, {})
   );
 
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + user?._id, { withCredentials: true });
+        console.log("res-ind: ", response.data.online)
+        setImOnline(response.data.online);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [user?._id]);
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -78,20 +97,35 @@ const Userclick = () => {
         <div className="lg:w-1/3 bg-white rounded-lg shadow p-6 flex flex-col items-center space-y-6">
 
           {/* Profile Image */}
-          <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gray-200">
-            {user?.photourl !== "http://peoplepost-default.png" ? (
-              <img
-                src={user?.photourl}
-                alt={`${user?.firstname} ${user?.lastname}`}
-                className="w-full h-full object-contain"
-              />
+          <div className="relative w-48 h-48 flex items-center justify-center">
+            <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-gray-200">
+
+              {user?.photourl !== "http://peoplepost-default.png" ? (
+                <img
+                  src={user?.photourl}
+                  alt={`${user?.firstname} ${user?.lastname}`}
+                  className="w-full h-full object-contain border-1 border-gray-300"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
+                  {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}
+                </div>
+              )}
+
+
+            </div>
+            {imOnline ? (
+              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+              </span>
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
-                {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}
-              </div>
+              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+              </span>
             )}
           </div>
-
 
           {/* Name */}
           <h1 className="text-xl font-semibold text-gray-900 text-center">

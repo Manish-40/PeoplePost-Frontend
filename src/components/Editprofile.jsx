@@ -127,7 +127,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { baseurl } from '../utils/constants';
+import { baseurl, baseurlIndicator } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userslice';
 import Dialog from "@mui/material/Dialog";
@@ -335,6 +335,26 @@ const Editprofile = ({ user }) => {
   useEffect(() => {
     fetchViewedBy()
   }, [])
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + user._id, { withCredentials: true });
+        console.log("res-ind: ", response.data.online)
+        setImOnline(response.data.online);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [user._id]);
+
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -343,17 +363,33 @@ const Editprofile = ({ user }) => {
         <div className="lg:w-1/3 bg-white rounded-lg shadow p-6 flex flex-col items-center space-y-6">
 
           {/* Profile Picture */}
-          <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-gray-200">
+          <div className="relative w-48 h-48 flex items-center justify-center">
+          <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-gray-200">
+
             {previewUrl !== "http://peoplepost-default.png" ? (
+
               <img
                 src={previewUrl}
                 alt={`${firstname} ${lastname}`}
                 className="w-full h-full object-contain border-1 border-gray-300"
               />
+
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-6xl text-gray-400">
                 {firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase()}
               </div>
+            )}
+            </div>
+            {imOnline ? (
+              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+              </span>
+            ) : (
+              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+              </span>
             )}
           </div>
 
@@ -390,28 +426,28 @@ const Editprofile = ({ user }) => {
             <h3 className="text-lg font-semibold text-gray-800">Profile Viewed By:</h3>
             {user?.viewedBy?.length > 0 ? (
               user?.viewedBy.map((e) => (
-                <Link to={"/user/"+e._id}>
-                <div
-                  key={e._id}
-                  className="flex p-3 mb-2 border rounded hover:shadow transition"
-                >
-                  {/* Profile Picture */}
-                  <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
-                    {e.photourl !== "http://peoplepost-default.png" ? (
-                      <img
-                        src={e.photourl}
-                        alt="User avatar"
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
-                        {(e.firstname?.charAt(0).toUpperCase() || "") +
-                          (e.lastname?.charAt(0).toUpperCase() || "")}
-                      </div>
-                    )}
+                <Link to={"/user/" + e._id}>
+                  <div
+                    key={e._id}
+                    className="flex p-3 mb-2 border rounded hover:shadow transition"
+                  >
+                    {/* Profile Picture */}
+                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
+                      {e.photourl !== "http://peoplepost-default.png" ? (
+                        <img
+                          src={e.photourl}
+                          alt="User avatar"
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
+                          {(e.firstname?.charAt(0).toUpperCase() || "") +
+                            (e.lastname?.charAt(0).toUpperCase() || "")}
+                        </div>
+                      )}
+                    </div>
+                    <div className='mt-2'>{e.firstname} {e.lastname}</div>
                   </div>
-                  <div className='mt-2'>{e.firstname} {e.lastname}</div>
-                </div>
                 </Link>
               ))
             ) : (

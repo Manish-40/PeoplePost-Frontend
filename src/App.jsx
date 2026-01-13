@@ -131,9 +131,35 @@ import Userpostclick from "./components/Userpostclick";
 import Editeducation from "./components/Editeducation";
 import Editexperience from "./components/Editexperience";
 import AuthLoader from "./components/AuthLoader";
+import { useEffect } from "react";
+import axios from "axios";
+import { baseurlIndicator } from "./utils/constants";
 function AppRoutes() {
   //const user = useSelector((store) => store.user); 
   const { data: user, loading } = useSelector((store) => store.user);
+  useEffect(() => {
+    if (!user) return;
+
+    // 1. Function to tell the backend "I am online"
+    const sendHeartbeat = async () => {
+      try {
+        await axios.post(baseurlIndicator + "/heartbeat/" +user._id, {withCredentials: true});
+        console.log("done");
+      } catch (err) {
+        console.error("Heartbeat failed", err);
+      }
+    };
+
+    // 2. Send immediately on mount
+    sendHeartbeat();
+
+    // 3. Set interval to send every 60 seconds
+    const interval = setInterval(sendHeartbeat, 20000);
+
+    // 4. Cleanup: stop the interval if the user logs out or closes the app
+    return () => clearInterval(interval);
+  }, [user]);
+  
   if (loading) {
     return <div>Loading...</div>; // or spinner
   }
@@ -142,8 +168,8 @@ function AppRoutes() {
       <Route
         path="/"
         element={
-          user ? <Navigate to="/feed" replace /> 
-          : <Navigate to="/login" replace />
+          user ? <Navigate to="/feed" replace />
+            : <Navigate to="/login" replace />
         }
       />
 
@@ -162,12 +188,12 @@ function AppRoutes() {
         <Route path="/chat/:targetUserId" element={<Chat />} />
         <Route path="/group/chat" element={<Groupchat />} />
         <Route path="/group" element={<Group />} />
-        <Route path="/comment/:targetpostid"element={<Comment/>}/>
-        <Route path="/like/:targetpostid"element={<Like/>}/>
-        <Route path="/user/:userid" element={<Userclick/>}/>
-        <Route path="/post/user/:targetpostid" element={<Userpostclick/>}/>
-        <Route path="/education/:educationid" element={<Editeducation/>}/>
-        <Route path="/experience/:experienceid" element={<Editexperience/>}/>
+        <Route path="/comment/:targetpostid" element={<Comment />} />
+        <Route path="/like/:targetpostid" element={<Like />} />
+        <Route path="/user/:userid" element={<Userclick />} />
+        <Route path="/post/user/:targetpostid" element={<Userpostclick />} />
+        <Route path="/education/:educationid" element={<Editeducation />} />
+        <Route path="/experience/:experienceid" element={<Editexperience />} />
       </Route>
     </Routes>
   );

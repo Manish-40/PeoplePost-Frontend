@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { baseurl } from '../utils/constants';
+import { baseurl, baseurlIndicator } from '../utils/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { addUserPost } from '../utils/userpostslice';
@@ -114,6 +114,36 @@ const Userpost = () => {
       alert("Failed to delete post");
     }
   }
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    if (!Array.isArray(userpostsave) || userpostsave?.length === 0) return;
+    const checkStatus = async () => {
+      try {
+        const results = await Promise.all(
+          userpostsave.map(userPost =>
+            axios.get(baseurlIndicator + "/heartbeat/" + userPost.author, { withCredentials: true })
+          ));
+        const statusMap = {};
+        console.log("userpostsave",results);
+        
+        results.forEach((res, index) => {
+          statusMap[userpostsave[index].author] = res.data.online;
+        });
+        console.log(statusMap);
+
+        setImOnline(statusMap);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [userpostsave?.length]);
   if (!userpostsave) return;
 
   if (userpostsave.length === 0) return <h1 className='flex justify-center my-10'>No collections found</h1>;
@@ -138,9 +168,10 @@ const Userpost = () => {
             >
 
               <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
-                <div className="flex items-center p-4 shrink-0">
-                <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 border-1 border-gray-300">
-                
+                <div className="relative flex items-center p-4 shrink-0">
+                  <div className='relative w-12 h-12 mr-3'>
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 border-1 border-gray-300">
+                    
                     {photourl !== "http://peoplepost-default.png" ? (
                       <img
                         src={photourl}
@@ -152,8 +183,19 @@ const Userpost = () => {
                         {style}
                       </div>
                     )}
+                    
                   </div>
-
+                  {imOnline[author] === true ? (
+                        <span className="absolute top-0 right-0 flex h-3 w-3">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                          <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                        </span>) : (
+                        <span className="absolute top-0 right-0 flex h-3 w-3">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                        </span>
+                      )}
+                      </div>
                   <div className="font-semibold text-gray-900">
                     {firstname || "User"} {lastname || ""}
                   </div>

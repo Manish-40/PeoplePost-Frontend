@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
-import { baseurl } from '../utils/constants';
+import { baseurl, baseurlIndicator } from '../utils/constants';
 
 const UserPostclick = () => {
   const { targetpostid } = useParams();
@@ -21,11 +21,31 @@ const UserPostclick = () => {
   useEffect(() => {
     fetchpostuser()
   }, [targetpostid])
-  const { url, description, userPostViewCount, _id, createdAt, firstname, lastname ,viewedBy, author } = post;
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + post?.author, { withCredentials: true });
+        console.log("res-ind: ", response.data.online)
+        setImOnline(response.data.online);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [post]);
+
+  const { url, description, userPostViewCount, _id, createdAt, firstname, lastname, viewedBy, author } = post;
   const photourl = post?.author?.photourl;
   console.log(post?.author?._id);
-  
-  const style=firstname?.charAt(0).toUpperCase()+lastname?.charAt(0).toUpperCase();
+
+  const style = firstname?.charAt(0).toUpperCase() + lastname?.charAt(0).toUpperCase();
   return (
     // <div className='p-3'>
     //     <div className='items-center justify-between'>
@@ -51,28 +71,39 @@ const UserPostclick = () => {
           {/* User info */}
           <Link to={"/user/" + author?._id}>
             <div className="flex items-center p-4">
-              <div className="w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
-                {photourl !== "http://peoplepost-default.png" ? (
-                  <img
-                    src={photourl}
-                    alt="User avatar"
-                    className="w-full h-full object-contain border-1 border-gray-300"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">
-                    {style}
-                  </div>
+              <div className='relative w-12 h-12 mr-3'>
+                <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0">
+
+                  {photourl !== "http://peoplepost-default.png" ? (
+                    <img
+                      src={photourl}
+                      alt="User avatar"
+                      className="w-full h-full object-contain border-1 border-gray-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-300 text-gray-700 font-semibold">
+                      {style}
+                    </div>
+                  )}
+                </div>
+                {imOnline === true ? (<span className="absolute top-0 right-0 flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                </span>) : (
+                  <span className="absolute top-0 right-0 flex h-3 w-3">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                  </span>
                 )}
-              </div>
+                </div>
+                <div className="font-semibold text-gray-900">
+                  {firstname || "User"} {lastname || ""}
+                </div>
 
-              <div className="font-semibold text-gray-900">
-                {firstname || "User"} {lastname || ""}
+                <div className="ml-auto text-gray-500 text-sm font-semibold">
+                  {createdAt}
+                </div>
               </div>
-
-              <div className="ml-auto text-gray-500 text-sm font-semibold">
-                {createdAt}
-              </div>
-            </div>
 
           </Link>
 

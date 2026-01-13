@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import { baseurl } from '../utils/constants';
+import { baseurl, baseurlIndicator } from '../utils/constants';
 import axios from 'axios';
 import { removeUser } from '../utils/userslice';
 import { addUserfound } from '../utils/userfoundslice';
@@ -43,6 +43,25 @@ const Navbar = () => {
       navigate("/found");
     }
   }
+
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + user._id, { withCredentials: true });
+        console.log("res-ind: ", response.data.online)
+        setImOnline(response.data.online);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [user._id]);
 
 
 
@@ -100,23 +119,43 @@ const Navbar = () => {
 
                 <div className="dropdown dropdown-end flex mx-5">
                   <p className='hidden lg:block text-sm mr-2 mx-4 my-2'>Welcome, <span className="font-bold">{user.firstname}</span></p>
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost btn-circle avatar relative"
+                  >
+                    {/* Online status */}
+                    {imOnline === true ?(<span className="absolute top-0 right-0 flex h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                    </span>):(
+                      <span className="absolute top-0 right-0 flex h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                    </span>
+                    )}
 
 
-                  <div tabIndex={0} role="button" className="btn border-amber-50 btn-ghost btn-circle avatar">
-                    <div className="w-10 rounded-full my-4">
-                      {user?.photourl !== "http://peoplepost-default.png" ? (
-                        <img
-                          alt="user photo"
-                          src={user.photourl}
-                          onError={(e) => e.target.src = 'https://placehold.co/40x40/94A3B8/FFFFFF?text=NA'}
-                          className='w-full h-full object-contain'
-                        />) : (
-                        <div className="items-center w-10 text-center rounded-full my-2 mr-4">
-                          {user?.firstname.charAt(0).toUpperCase() + user?.lastname.charAt(0).toUpperCase()}
-                        </div>
-                      )}
-                    </div>
+                      <div className="w-10 rounded-full overflow-hidden">
+                        {user?.photourl !== "http://peoplepost-default.png" ? (
+                          <img
+                            alt="user photo"
+                            src={user.photourl}
+                            onError={(e) =>
+                            (e.target.src =
+                              "https://placehold.co/40x40/94A3B8/FFFFFF?text=NA")
+                            }
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-slate-400 text-white font-semibold">
+                            {user?.firstname?.charAt(0)?.toUpperCase()}
+                            {user?.lastname?.charAt(0)?.toUpperCase()}
+                          </div>
+                        )}
+                      </div>
                   </div>
+
                   <ul
                     tabIndex={0}
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[99] mt-3 w-52 p-2 shadow-lg text-gray-800"

@@ -1,11 +1,13 @@
 
-import { useEffect } from 'react'
-import { baseurl } from '../utils/constants';
+import { useEffect, useState } from 'react'
+import { baseurl, baseurlIndicator } from '../utils/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { addRequest, removerequest } from '../utils/requestslice';
 import axios from 'axios';
 const Requests = () => {
   const requests = useSelector((store) => store.requests);
+  
+  
   const dispatch = useDispatch();
   var count = 0;
 
@@ -35,6 +37,39 @@ const Requests = () => {
   useEffect(() => {
     fetchrequest();
   }, []);
+  const [imOnline, setImOnline] = useState({});
+
+  useEffect(() => {
+    if (!Array.isArray(requests) || requests.length === 0) return;
+    const checkStatus = async () => {
+      try {
+        const results = await Promise.all(
+          requests.map(req =>
+            axios.get(baseurlIndicator + "/heartbeat/" + req.fromuserid._id, { withCredentials: true })
+            
+          ));
+        const statusMap = {};
+        console.log("axios.get of request",results);
+        
+        results.forEach((res, index) => {
+          statusMap[requests[index].fromuserid?._id] = res.data.online;
+          console.log("statusmap",statusMap);
+          
+        });
+        
+
+        setImOnline(statusMap);
+        
+      } catch (err) {
+        setImOnline({});
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [requests?.length]);
 
   if (!requests) return;
 
@@ -88,26 +123,35 @@ const Requests = () => {
             className='flex flex-col sm:flex-row items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200'
           >
 
-            {photourl && photourl !== "http://peoplepost-default.png" ? (
-              <div className="flex-shrink-0 mb-4 sm:mb-0 items-center justify-center">
-                <img
-                  alt="photo"
-                  className="w-20 h-20 rounded-full object-contain shadow border-1 border-gray-300"
-                  src={photourl}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      "https://placehold.co/80x80/94A3B8/FFFFFF?text=NA";
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-2xl text-gray-800 shadow border-2 border-gray-300">
-                {(firstname?.charAt(0)?.toUpperCase() || "") +
-                  (lastname?.charAt(0)?.toUpperCase() || "")}
-              </div>
-            )}
 
+            <div className="relative flex-shrink-0 mb-4 sm:mb-0 items-center justify-center">
+              {photourl && photourl !== "http://peoplepost-default.png" ? (<img
+                alt="photo"
+                className="w-20 h-20 rounded-full object-contain shadow border-1 border-gray-300"
+                src={photourl}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://placehold.co/80x80/94A3B8/FFFFFF?text=NA";
+                }}
+              />
+
+              ) : (
+                <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-2xl text-gray-800 shadow border-2 border-gray-300">
+                  {(firstname?.charAt(0)?.toUpperCase() || "") +
+                    (lastname?.charAt(0)?.toUpperCase() || "")}
+                </div>
+              )}
+              {imOnline[_id] === true ? (<span className="absolute bottom-15 right-1 flex h-3 w-3">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+              </span>) : (
+                <span className="absolute bottom-15 right-1 flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                </span>
+              )}
+            </div>
 
 
 

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { baseurl } from "../utils/constants";
+import { baseurl, baseurlIndicator } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostFeed } from "../utils/postfeedslice";
 import { setLikes, updateLike } from "../utils/likeslice";
@@ -88,6 +88,33 @@ const Collection = () => {
     }
   }
 
+  const [imOnline, setImOnline] = useState(false);
+
+  useEffect(() => {
+    if (!Array.isArray(collections) || collections?.length === 0) return;
+    const checkStatus = async () => {
+      try {
+        const results = await Promise.all(
+          collections.map(coll =>
+            axios.get(baseurlIndicator + "/heartbeat/" + coll.author?._id, { withCredentials: true })
+          ));
+        const statusMap = {};
+        results.forEach((res, index) => {
+          statusMap[collections[index].author?._id] = res.data.online;
+        });
+        console.log(statusMap);
+
+        setImOnline(statusMap);
+      } catch (err) {
+        setImOnline(false);
+      }
+    };
+
+    checkStatus();
+    // Poll every 30 seconds to update the UI
+    const timer = setInterval(checkStatus, 21000);
+    return () => clearInterval(timer);
+  }, [collections?.length]);
   // useEffect(()=>{
   //   if(targetpostid)
   //   {
@@ -118,10 +145,10 @@ const Collection = () => {
     <div className="my-10 max-w-7xl mx-auto px-4">
       <div className="flex flex-col items-center">
         {collections.map((collection) => {
-          const { url, description, firstname,lastname, createdAt } = collection;
+          const { url, description, firstname, lastname, createdAt } = collection;
           const { photourl } = collection.author;
           const postId = collection._id;
-          const style=firstname?.charAt(0).toUpperCase() + lastname?.charAt(0).toUpperCase()
+          const style = firstname?.charAt(0).toUpperCase() + lastname?.charAt(0).toUpperCase()
           console.log(style);
           const authorId = collection.author._id;
           const liked = (likes?.[postId] ?? 0) > 0; // If you want to show filled heart
@@ -136,7 +163,7 @@ const Collection = () => {
                 {/* User info */}
                 <div className="flex items-center justify-between w-full h-16">
                   {/* Left Side - Avatar + Name */}
-                  <div className="flex items-center">
+                  <div className="relative flex items-center">
 
                     {/* <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3">
                       <img
@@ -146,17 +173,29 @@ const Collection = () => {
                       />
                     </div> */}
                     {/* Profile Picture */}
-                    <div className="w-10 h-10 rounded-full overflow-hidden mr-3 ml-3 border-1 border-gray-300">
-                      {photourl !== "http://peoplepost-default.png" ? (
-                        <img
-                          src={photourl}
-                          alt="User avatar"
-                          className="w-full h-full object-contain"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
-                          {style}
-                        </div>
+                    <div className="relative w-10 h-10 mr-3 ml-3">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden border-1 border-gray-300">
+                        {photourl !== "http://peoplepost-default.png" ? (
+                          <img
+                            src={photourl}
+                            alt="User avatar"
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 flex items-center justify-center bg-gray-300 text-gray-800 rounded-full">
+                            {style}
+                          </div>
+                        )}
+                      </div>
+                      {imOnline[authorId] === true ? (
+                        <span className="absolute top-0 right-0 flex h-3 w-3">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                          <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                        </span>) : (
+                        <span className="absolute top-0 right-0 flex h-3 w-3">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                        </span>
                       )}
                     </div>
                     <div className="font-semibold text-gray-900 text-sm">
