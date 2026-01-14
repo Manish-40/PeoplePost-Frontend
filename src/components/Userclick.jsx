@@ -70,25 +70,25 @@ const Userclick = () => {
     }, {})
   );
 
+// backend online indicator
+  // const [imOnline, setImOnline] = useState(false);
 
-  const [imOnline, setImOnline] = useState(false);
+  // useEffect(() => {
+  //   const checkStatus = async () => {
+  //     try {
+  //       const response = await axios.get(baseurlIndicator + "/heartbeat/" + user?._id, { withCredentials: true });
+  //       console.log("res-ind: ", response.data.online)
+  //       setImOnline(response.data.online);
+  //     } catch (err) {
+  //       setImOnline(false);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const checkStatus = async () => {
-      try {
-        const response = await axios.get(baseurlIndicator + "/heartbeat/" + user?._id, { withCredentials: true });
-        console.log("res-ind: ", response.data.online)
-        setImOnline(response.data.online);
-      } catch (err) {
-        setImOnline(false);
-      }
-    };
-
-    checkStatus();
-    // Poll every 30 seconds to update the UI
-    const timer = setInterval(checkStatus, 21000);
-    return () => clearInterval(timer);
-  }, [user?._id]);
+  //   checkStatus();
+  //   // Poll every 30 seconds to update the UI
+  //   const timer = setInterval(checkStatus, 21000);
+  //   return () => clearInterval(timer);
+  // }, [user?._id]);
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
@@ -114,17 +114,6 @@ const Userclick = () => {
 
 
             </div>
-            {imOnline ? (
-              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
-              </span>
-            ) : (
-              <span className="absolute top-6 right-5 flex h-3 w-3 z-10">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
-              </span>
-            )}
           </div>
 
           {/* Name */}
