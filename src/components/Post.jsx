@@ -3,6 +3,7 @@ import { baseurl } from '../utils/constants';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { addPost } from '../utils/postslice';
+import img from "../utils/profile.png";
 
 const Post = () => {
   const [mode, setMode] = useState("url");
@@ -249,7 +250,7 @@ const Post = () => {
                   <img src={preview} alt="Preview" className="w-full h-full object-contain" />
                 ) : (
                   <img
-                    src="https://openseauserdata.com/files/7f16cec1cc177a7e148067006e73c02a.png"
+                    src={img}
                     alt="Placeholder"
                     className="w-full h-full object-contain rounded-lg bg-white"
                   />
