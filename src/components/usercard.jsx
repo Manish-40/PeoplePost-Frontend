@@ -3,6 +3,7 @@ import { baseurl, baseurlIndicator } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeuserfeed } from "../utils/feedslice";
 import { useEffect, useState } from "react";
+import img from "../utils/profile.png"
 
 const UserCard = ({ user }) => {
   const { _id, firstname, lastname, age, gender, about, photourl } = user;
@@ -28,7 +29,7 @@ const UserCard = ({ user }) => {
   }, [_id]);
 
   const defaultPhoto =
-    "https://openseauserdata.com/files/7f16cec1cc177a7e148067006e73c02a.png";
+    img
 
   const handleSendRequest = async (status, userid) => {
     try {
