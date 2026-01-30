@@ -73,7 +73,7 @@ const Navbar = () => {
 
           <div className="flex-1 flex justify-start items-center gap-4 mb-2 md:mb-0">
             <Link to="/" className="text-2xl sm:text-3xl font-extrabold tracking-tight hover:text-blue-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md py-1 px-2">
-              DevMatch
+              PeoplePost
             </Link>
             {user &&
               <>
