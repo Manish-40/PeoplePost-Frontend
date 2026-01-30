@@ -27,7 +27,7 @@ const UserPostclick = () => {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const response = await axios.get(baseurlIndicator + "/heartbeat/" + post?.author, { withCredentials: true });
+        const response = await axios.get(baseurlIndicator + "/heartbeat/" + post?.author?._id, { withCredentials: true });
         console.log("res-ind: ", response.data.online)
         setImOnline(response.data.online);
       } catch (err) {
