@@ -131,6 +131,7 @@ import Userpostclick from "./components/Userpostclick";
 import Editeducation from "./components/Editeducation";
 import Editexperience from "./components/Editexperience";
 import AuthLoader from "./components/AuthLoader";
+import ForgotPassword from "./components/ForgotPassword"
 import { useEffect } from "react";
 import axios from "axios";
 import { baseurlIndicator } from "./utils/constants";
@@ -143,7 +144,7 @@ function AppRoutes() {
     // 1. Function to tell the backend "I am online"
     const sendHeartbeat = async () => {
       try {
-        await axios.post(baseurlIndicator + "/heartbeat/" +user._id, {withCredentials: true});
+        await axios.post(baseurlIndicator + "/heartbeat/" + user._id, { withCredentials: true });
         console.log("done");
       } catch (err) {
         console.error("Heartbeat failed", err);
@@ -159,7 +160,7 @@ function AppRoutes() {
     // 4. Cleanup: stop the interval if the user logs out or closes the app
     return () => clearInterval(interval);
   }, [user]);
-  
+
   if (loading) {
     return <div>Loading...</div>; // or spinner
   }
@@ -175,7 +176,7 @@ function AppRoutes() {
 
       {/* <Route path="/overview" element={<Overview />} /> */}
       <Route path="/login" element={<Login />} />
-
+      <Route path="/user/forgotPassword" element={<ForgotPassword />} />
       <Route path="/" element={<Body />}>
         <Route path="/feed" element={<Feed />} />
         <Route path="/profile" element={<Profile />} />
@@ -194,6 +195,7 @@ function AppRoutes() {
         <Route path="/post/user/:targetpostid" element={<Userpostclick />} />
         <Route path="/education/:educationid" element={<Editeducation />} />
         <Route path="/experience/:experienceid" element={<Editexperience />} />
+
       </Route>
     </Routes>
   );

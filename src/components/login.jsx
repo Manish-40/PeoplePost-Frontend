@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { addUser } from '../utils/userslice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { baseurl } from '../utils/constants';
 const Login = () => {
   const [emailid, setemailid] = useState("");
@@ -159,6 +159,17 @@ const Login = () => {
             </div>
             {formErrors.password && <p className="px-2 pt-1 text-xs text-red-600">{formErrors.password}</p>}
           </div>
+
+
+          {isloginform &&<div className="flex justify-end mb-4">
+            <Link
+              to="/user/forgotPassword"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Forgot password?
+            </Link>
+          </div>}
+
 
           <div className="flex items-center justify-between mb-6">
             {/* <label className="inline-flex items-center gap-2 text-sm text-gray-700">
