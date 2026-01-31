@@ -7,18 +7,18 @@ const ForgotPassword = () => {
     const [emailid, setemailid] = useState("");
     const [password, setpassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const navigate=useNavigate();
+    const [error,setError]=useState("");
+    const navigate = useNavigate();
 
-    const forgotPassword=async()=>{
-        try
-        {
-            const res=await axios.patch(baseurl+"/user/forgotPassword",{emailid,newPassword:password},{withCredentials:true});
+    const forgotPassword = async () => {
+        try {
+            const res = await axios.patch(baseurl + "/user/forgotPassword", { emailid, newPassword: password }, { withCredentials: true });
             console.log(res.data);
             return navigate("/login");
         }
-        catch(error)
-        {
-            console.log(error);
+        catch (error) {
+            setError(error?.response?.data?.message || "something went wront");
+            console.log(error?.response?.data?.message);
         }
     }
     return (
@@ -55,7 +55,9 @@ const ForgotPassword = () => {
                                         placeholder=" "
                                         value={password}
                                         onChange={(e) => setpassword(e.target.value)}
+                                        
                                     />
+                                    
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(v => !v)}
@@ -64,12 +66,15 @@ const ForgotPassword = () => {
                                     >
                                         {showPassword ? "Hide" : "Show"}
                                     </button>
+                                    
                                 </div>
+                                
                             </div>
-                            <div className="text-center">
+                            {error&&<p className="px-2 pt-1 text-xs text-red-600">{error}</p>}
+                            <div className="p-2 text-center">
                                 <button
                                     className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold py-3 px-6 rounded-lg w-full text-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-                                onClick={forgotPassword}>Change Password
+                                    onClick={forgotPassword}>Change Password
                                 </button>
                             </div>
                         </div>
