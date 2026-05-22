@@ -17,7 +17,11 @@ const Userpost = () => {
   const userpostsave = useSelector((store) => store.userpost);
   const likes = useSelector((store) => store.like);
   //   console.log(userpostsave.author._id);
-  console.log(userpostsave);
+  // console.log("userpost userpostsave collection data",userpostsave);
+
+  const user = useSelector((store) => store.user.data);
+  console.log("userpost user collection data",user);
+  
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogHandleToOpen = (id) => {
@@ -40,6 +44,7 @@ const Userpost = () => {
       dispatch(addUserPost(res.data.data));
 
       fetchLikesForAllPosts(res.data.data);
+      
     }
     catch (error) {
       console.log(error);
@@ -146,6 +151,10 @@ const Userpost = () => {
   }, [userpostsave?.length]);
   if (!userpostsave) return;
 
+  console.log("userpostsave data",userpostsave);
+  console.log("hello");
+  
+
   if (userpostsave.length === 0) return <h1 className='flex justify-center my-10'>No collections found</h1>;
   return (
     <div className='my-10 max-w-4xl mx-auto px-4'>
@@ -156,9 +165,10 @@ const Userpost = () => {
 
         {userpostsave.map((post) => {
 
-          const { url, description, firstname, lastname, photourl, _id, createdAt, userPostViewCount } = post;
+          const { url, description, firstname, lastname, _id, createdAt, userPostViewCount } = post;
           const liked = (likes?.[_id] ?? 0) > 0;
           const { author } = post;
+          const {photourl}=user;
           const style = firstname.charAt(0).toUpperCase() + lastname.charAt(0).toUpperCase();
           return (
             <div
@@ -166,12 +176,10 @@ const Userpost = () => {
               className='bg-white rounded-xl shadow-lg
                             transform hover:scale-[1.01] transition-all duration-300 ease-in-out border border-gray-200'
             >
-
               <Link to={"/user/" + author} onClick={() => fetchUserView(author)}>
                 <div className="relative flex items-center p-4 shrink-0">
                   <div className='relative w-12 h-12 mr-3'>
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 border-1 border-gray-300">
-                    
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3 flex-shrink-0 border-1 border-gray-300">      
                     {photourl !== "http://peoplepost-default.png" ? (
                       <img
                         src={photourl}

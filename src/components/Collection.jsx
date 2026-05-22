@@ -14,8 +14,8 @@ const Collection = () => {
   const likes = useSelector((store) => store.like);
   //const {targetuserid}=useParams();
   //const {targetpostid}=useParams();
-
-
+  console.log(collections);
+  
   const dispatch = useDispatch();
 
   // Fetch posts
