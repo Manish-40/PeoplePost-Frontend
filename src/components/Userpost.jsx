@@ -21,7 +21,6 @@ const Userpost = () => {
 
   const user = useSelector((store) => store.user.data);
   console.log("userpost user collection data",user);
-  
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogHandleToOpen = (id) => {
