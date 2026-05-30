@@ -7,6 +7,7 @@ import img from "../utils/profile.png"
 
 const UserCard = ({ user }) => {
   const { _id, firstname, lastname, age, gender, about, photourl } = user;
+  console.log(photourl);
   const dispatch = useDispatch();
 
   const [imOnline, setImOnline] = useState(false);
@@ -64,7 +65,7 @@ const UserCard = ({ user }) => {
             </span>
           )}
           <img
-            src={photourl ? `${baseurl}/${photourl}` : defaultPhoto}
+            src={photourl ? `${photourl}` : defaultPhoto}
             alt={`${firstname} ${lastname}`}
             className="w-full h-full object-cover"
             onError={(e) => {
