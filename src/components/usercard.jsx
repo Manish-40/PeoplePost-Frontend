@@ -53,7 +53,6 @@ const UserCard = ({ user }) => {
             Add to Friend
           </h3>
         </div>
-
         <div className="relative w-full aspect-square bg-gray-100 flex items-center justify-center">
           {imOnline === true ? (<span className="absolute top-0 right-0 flex h-3 w-3">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
