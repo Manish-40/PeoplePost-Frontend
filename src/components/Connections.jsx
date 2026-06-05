@@ -118,45 +118,113 @@ const Connections = () => {
 
               <div
                 key={_id}
-                className='flex items-center bg-indigo-50 rounded-xl shadow-lg p-6 mb-4 transform hover:scale-[1.02] transition-all duration-300 ease-in-out border border-gray-200'
+                className="
+    flex flex-col sm:flex-row
+    items-center
+    bg-indigo-50
+    rounded-xl
+    shadow-lg
+    p-4 sm:p-6
+    mb-4
+    border border-gray-200
+    hover:scale-[1.02]
+    transition-all duration-300 ease-in-out
+  "
               >
+                {/* Profile Photo */}
 
-                {/* {imOnline[_id] === true ? "online" : "offline"} */}
-
-                <div className="relative flex items-center justify-center">
+                <div className="relative flex-shrink-0">
                   {photourl && photourl !== "http://peoplepost-default.png" ? (
                     <img
                       src={photourl}
                       alt={firstname || "User"}
-                      className="w-20 h-20 rounded-full object-contain border-1 border-gray-300"
+                      className="
+          w-24 h-24
+          sm:w-20 sm:h-20
+          rounded-full
+          object-cover
+          border border-gray-300
+        "
                     />
                   ) : (
-                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-4xl text-gray-800">
+                    <div
+                      className="
+          w-24 h-24
+          sm:w-20 sm:h-20
+          flex items-center justify-center
+          rounded-full
+          bg-gray-300
+          text-4xl
+          text-gray-800
+        "
+                    >
                       {(firstname?.charAt(0).toUpperCase() || "") +
                         (lastname?.charAt(0).toUpperCase() || "")}
                     </div>
                   )}
 
+                  {imOnline[_id] === true ? (
+                    <span className="absolute bottom-18 right-1 flex h-3 w-3"> 
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span> 
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span> 
+                    </span>) : (<span className="absolute bottom-18 right-1 flex h-3 w-3">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span> 
+                    <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span> 
+                    </span>)}
+                </div>
 
-                  {imOnline[_id] === true ? (<span className="absolute bottom-15 right-1 flex h-3 w-3">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
-                  </span>) : (
-                    <span className="absolute bottom-15 right-1 flex h-3 w-3">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
-                    </span>
+                {/* User Info */}
+
+                <div
+                  className="
+      flex-grow
+      text-center sm:text-left
+      mx-0 sm:mx-4
+      mt-3 sm:mt-0
+      min-w-0
+    "
+                >
+                  <h2 className="font-extrabold text-xl text-gray-900 break-words">
+                    {firstname + " " + lastname}
+                  </h2>
+
+                  {age && gender && (
+                    <p className="text-sm text-gray-600 my-1">
+                      {age} years old, {gender}
+                    </p>
                   )}
-                </div>
-                <div className='text-left mx-4 flex-grow'>
-                  <h2 className='font-extrabold text-xl text-gray-900'>{firstname + " " + lastname}</h2>
-                  {age && gender && <p className="text-sm text-gray-600 my-1">{age} years old, {gender}</p>}
-                  <p className="text-gray-700 text-sm line-clamp-2">{about}</p>
+
+                  <p
+                    className="
+        text-gray-700
+        text-sm
+        break-words
+        line-clamp-2
+      "
+                  >
+                    {about}
+                  </p>
                 </div>
 
-                {/* Chat button */}
-                <Link to={"/chat/" + _id}>
-                  <button className='py-2 px-4 text-sm font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition-colors'>
+                {/* Chat Button */}
+
+                <Link
+                  to={"/chat/" + _id}
+                  className="w-full sm:w-auto mt-3 sm:mt-0"
+                >
+                  <button
+                    className="
+        w-full sm:w-auto
+        py-2 px-4
+        text-sm font-semibold
+        text-white
+        bg-green-600
+        rounded-lg
+        shadow-md
+        hover:bg-green-700
+        transition-colors
+      "
+                  >
                     Chat
                   </button>
                 </Link>
