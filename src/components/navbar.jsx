@@ -22,20 +22,41 @@ const Navbar = () => {
 
     }
   }
-  const handlesearch = async () => {
+  // const handlesearch = async () => {
+  //   try {
+  //     const res = await axios.post(
+  //       baseurl + "/search", {
+  //       firstname
+  //     }, { withCredentials: true });
+  //     if (!Array.isArray(res.data) || res.data.length === 0) {
+  //       dispatch(addUserfound([]));
+  //     } else {
+  //       dispatch(addUserfound(res.data));
+  //     }
+  //     navigate("/found");
+  //     // dispatch((addUserfound(res.data)));
+  //     // navigate("/found");
+  //   }
+  //   catch (error) {
+  //     console.log(error);
+  //     dispatch(addUserfound([]));
+  //     navigate("/found");
+  //   }
+  // }
+
+  const fetchSearchUser = async (firstname) => {
     try {
-      const res = await axios.post(
-        baseurl + "/search", {
-        firstname
-      }, { withCredentials: true });
+      const res = await axios.get(baseurl + "/search/user?firstname=" + firstname, { withCredentials: true });
+      console.log(res.data);
+      if (!firstname.trim()) {
+        navigate("/found");
+      }
       if (!Array.isArray(res.data) || res.data.length === 0) {
         dispatch(addUserfound([]));
       } else {
         dispatch(addUserfound(res.data));
       }
       navigate("/found");
-      // dispatch((addUserfound(res.data)));
-      // navigate("/found");
     }
     catch (error) {
       console.log(error);
@@ -104,11 +125,16 @@ const Navbar = () => {
                     placeholder="Search users..."
                     value={firstname}
                     onChange={(e) => setfirstname(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        fetchSearchUser(firstname);
+                      }
+                    }}
                   />
 
                   <button
                     className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-semibold py-2 px-4 rounded-r-full transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300 border-none"
-                    onClick={handlesearch}
+                    onClick={() => fetchSearchUser(firstname)}
                     aria-label="Search"
                   >
                     Search
@@ -125,35 +151,35 @@ const Navbar = () => {
                     className="btn btn-ghost btn-circle avatar relative"
                   >
                     {/* Online status */}
-                    {imOnline === true ?(<span className="absolute top-0 right-0 flex h-3 w-3">
+                    {imOnline === true ? (<span className="absolute top-0 right-0 flex h-3 w-3">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
-                    </span>):(
+                    </span>) : (
                       <span className="absolute top-0 right-0 flex h-3 w-3">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
-                    </span>
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                      </span>
                     )}
 
 
-                      <div className="w-10 rounded-full overflow-hidden">
-                        {user?.photourl !== "http://peoplepost-default.png" ? (
-                          <img
-                            alt="user photo"
-                            src={user.photourl}
-                            onError={(e) =>
-                            (e.target.src =
-                              "https://placehold.co/40x40/94A3B8/FFFFFF?text=NA")
-                            }
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-slate-400 text-white font-semibold">
-                            {user?.firstname?.charAt(0)?.toUpperCase()}
-                            {user?.lastname?.charAt(0)?.toUpperCase()}
-                          </div>
-                        )}
-                      </div>
+                    <div className="w-10 rounded-full overflow-hidden">
+                      {user?.photourl !== "http://peoplepost-default.png" ? (
+                        <img
+                          alt="user photo"
+                          src={user.photourl}
+                          onError={(e) =>
+                          (e.target.src =
+                            "https://placehold.co/40x40/94A3B8/FFFFFF?text=NA")
+                          }
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-slate-400 text-white font-semibold">
+                          {user?.firstname?.charAt(0)?.toUpperCase()}
+                          {user?.lastname?.charAt(0)?.toUpperCase()}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <ul
