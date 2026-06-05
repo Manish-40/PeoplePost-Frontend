@@ -139,24 +139,24 @@ const Connections = () => {
                       src={photourl}
                       alt={firstname || "User"}
                       className="
-          w-24 h-24
-          sm:w-20 sm:h-20
-          rounded-full
-          object-cover
-          border border-gray-300
-        "
+        w-24 h-24
+        sm:w-20 sm:h-20
+        rounded-full
+        object-cover
+        border border-gray-300
+      "
                     />
                   ) : (
                     <div
                       className="
-          w-24 h-24
-          sm:w-20 sm:h-20
-          flex items-center justify-center
-          rounded-full
-          bg-gray-300
-          text-4xl
-          text-gray-800
-        "
+        w-24 h-24
+        sm:w-20 sm:h-20
+        flex items-center justify-center
+        rounded-full
+        bg-gray-300
+        text-4xl
+        text-gray-800
+      "
                     >
                       {(firstname?.charAt(0).toUpperCase() || "") +
                         (lastname?.charAt(0).toUpperCase() || "")}
@@ -164,13 +164,16 @@ const Connections = () => {
                   )}
 
                   {imOnline[_id] === true ? (
-                    <span className="absolute bottom-18 right-1 flex h-3 w-3"> 
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span> 
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span> 
-                    </span>) : (<span className="absolute bottom-18 right-1 flex h-3 w-3">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span> 
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span> 
-                    </span>)}
+                    <span className="absolute top-1 right-2 flex h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-sky-500"></span>
+                    </span>
+                  ) : (
+                    <span className="absolute top-1 right-2 flex h-3 w-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500"></span>
+                    </span>
+                  )}
                 </div>
 
                 {/* User Info */}
